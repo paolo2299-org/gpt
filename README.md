@@ -21,6 +21,20 @@ Pretrain on the book text, or pass your own text file:
 Pretraining saves the final weights to `model.pth` and the lowest-validation-loss
 checkpoint to `model.best.pth`. Use `--best-output` to choose a different path.
 
+For a larger plain-text corpus, around a few MB, this is a useful starting run:
+
+```bash
+.venv/bin/python scripts/pretrain.py \
+  --preset book-124M \
+  --input-file path/to/larger-text.txt \
+  --num-epochs 10 \
+  --learning-rate 1e-4 \
+  --batch-size 2 \
+  --eval-freq 100 \
+  --eval-iter 20 \
+  --output model.pth
+```
+
 Generate with saved weights:
 
 ```bash
