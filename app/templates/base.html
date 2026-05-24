@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}LLM Completion Demo{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav">
+            <a class="brand" href="{{ url_for('pages.index') }}">LLM Completion Demo</a>
+            <span class="model-pill">{{ model_name }}</span>
+        </nav>
+    </header>
+    <main class="shell">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
+

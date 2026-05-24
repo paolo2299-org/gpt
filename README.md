@@ -42,6 +42,15 @@ Generate with saved weights:
 .venv/bin/python scripts/generate.py --weights model.best.pth --prompt "Every effort moves you"
 ```
 
+Run the local web UI:
+
+```bash
+.venv/bin/flask --app app run --debug
+```
+
+The web app loads `model.jane-austen-5.pth` on boot by default. Override that with
+`MODEL_WEIGHTS_PATH=/path/to/model.pth` and, if needed, `MODEL_PRESET=book-124M`.
+
 The default preset is `demo-small`, which keeps the chapter 5 context length and
 training methodology while reducing model dimensions for practical demos. Use
 `--preset book-124M` for the closer chapter 5 model shape.

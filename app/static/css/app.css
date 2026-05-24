@@ -1,0 +1,220 @@
+:root {
+    color-scheme: light;
+    --bg: #f7f7f4;
+    --surface: #ffffff;
+    --ink: #242424;
+    --muted: #70706a;
+    --line: #deded6;
+    --accent: #225c72;
+    --accent-strong: #17485a;
+    --danger: #9d2b2b;
+    --shadow: 0 18px 45px rgba(36, 36, 36, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.site-header {
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1rem 1.25rem;
+}
+
+.brand {
+    color: var(--ink);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.model-pill {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 0.35rem 0.7rem;
+}
+
+.shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 1.25rem;
+}
+
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.composer,
+.result-panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 1rem;
+}
+
+.field {
+    display: grid;
+    gap: 0.5rem;
+}
+
+label {
+    color: var(--muted);
+    display: grid;
+    font-size: 0.9rem;
+    font-weight: 650;
+    gap: 0.35rem;
+}
+
+textarea,
+input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--ink);
+    font: inherit;
+    padding: 0.7rem 0.75rem;
+}
+
+textarea {
+    min-height: 16rem;
+    resize: vertical;
+}
+
+textarea:focus,
+input:focus {
+    border-color: var(--accent);
+    outline: 3px solid rgba(34, 92, 114, 0.14);
+}
+
+.controls {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.primary-button {
+    appearance: none;
+    background: var(--accent);
+    border: 0;
+    border-radius: 6px;
+    color: #ffffff;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+    padding: 0.75rem 1rem;
+}
+
+.primary-button:hover {
+    background: var(--accent-strong);
+}
+
+.error {
+    border-left: 4px solid var(--danger);
+    color: var(--danger);
+    margin: 1rem 0 0;
+    padding-left: 0.75rem;
+}
+
+.result-header {
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+}
+
+.result-header h1 {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.result-header span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    overflow-wrap: anywhere;
+    text-align: right;
+}
+
+.completion {
+    background: #fbfbf8;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    line-height: 1.65;
+    margin: 0;
+    min-height: 21.5rem;
+    overflow: auto;
+    padding: 1rem;
+    white-space: pre-wrap;
+}
+
+.empty-state {
+    align-items: center;
+    background:
+        linear-gradient(90deg, rgba(34, 92, 114, 0.06) 1px, transparent 1px),
+        linear-gradient(rgba(34, 92, 114, 0.06) 1px, transparent 1px),
+        #fbfbf8;
+    background-size: 24px 24px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    min-height: 21.5rem;
+}
+
+.empty-mark {
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    height: 3rem;
+    width: 3rem;
+}
+
+@media (max-width: 820px) {
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 520px) {
+    .nav {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .controls {
+        grid-template-columns: 1fr;
+    }
+
+    .shell {
+        padding: 0.75rem;
+    }
+}
+
