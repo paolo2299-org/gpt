@@ -1,0 +1,7 @@
+services:
+  gpt:
+    image: ${IMAGE_NAME:-gpt}:${IMAGE_TAG:-main}
+    env_file:
+      - ${ENV_FILE:-.env.example}
+    environment:
+      PORT: 8080

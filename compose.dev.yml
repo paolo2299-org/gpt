@@ -1,0 +1,27 @@
+services:
+  gpt:
+    build:
+      context: .
+    command: flask --app app run --debug --no-reload --host=0.0.0.0 --port=8080
+    environment:
+      FLASK_ENV: development
+      MODEL_DEVICE: auto
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - type: bind
+        source: ./model.jane-austen-5.pth
+        target: /models/model.jane-austen-5.pth
+        read_only: true
+        bind:
+          create_host_path: false
+
+  test:
+    build:
+      context: .
+    command: python -m pytest tests/ -v
+    environment:
+      FLASK_ENV: development
+    volumes:
+      - .:/app

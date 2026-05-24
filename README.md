@@ -42,7 +42,13 @@ Generate with saved weights:
 .venv/bin/python scripts/generate.py --weights model.best.pth --prompt "Every effort moves you"
 ```
 
-Run the local web UI:
+Run the local web UI directly from the virtualenv:
+
+```bash
+make flask-run
+```
+
+Run the web UI with Docker Compose:
 
 ```bash
 make run
@@ -60,3 +66,30 @@ training methodology while reducing model dimensions for practical demos. Use
 ```bash
 .venv/bin/python -m pytest tests
 ```
+
+## Docker And Deployment
+
+This app follows the same VPS deployment shape as the other `pdlawson.com`
+projects:
+
+- Docker Compose service name: `gpt`
+- Public host: `gpt.pdlawson.com`
+- Production compose files: `compose.yml` + `compose.prod.yml`
+- External reverse-proxy network: `web`
+- Expected VPS working directory: `/srv/gpt/app/large-language-model`
+- Expected model path on VPS: `/srv/gpt/models/model.jane-austen-5.pth`
+
+The model weights are not baked into the Docker image. Copy
+`model.jane-austen-5.pth` to the VPS path above before starting the production
+service.
+
+Production commands on the VPS:
+
+```bash
+make prod-start
+make prod-stop
+make prod-restart
+```
+
+Pushing to `main` runs `.github/workflows/deploy.yml`, builds the image, pushes
+it to GHCR, then SSHs into the VPS and restarts the `gpt` service.
