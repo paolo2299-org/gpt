@@ -45,7 +45,7 @@ Generate with saved weights:
 Run the local web UI:
 
 ```bash
-.venv/bin/flask --app app run --debug
+make run
 ```
 
 The web app loads `model.jane-austen-5.pth` on boot by default. Override that with
