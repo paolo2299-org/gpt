@@ -38,6 +38,15 @@
             <p class="error">{{ error }}</p>
         {% endif %}
     </form>
+
+    {% if not completion %}
+        <div class="examples" aria-label="Example phrase starts">
+            <button type="button" data-example="It was a truth">It was a truth</button>
+            <button type="button" data-example="The morning was">The morning was</button>
+            <button type="button" data-example="She had never">She had never</button>
+            <button type="button" data-example="In the drawing-room">In the drawing-room</button>
+        </div>
+    {% endif %}
 </section>
 <script>
     const completionForm = document.querySelector("[data-completion-form]");
@@ -47,5 +56,13 @@
             completionForm.querySelector("button[type='submit']").disabled = true;
         });
     }
+
+    const promptInput = document.querySelector("#prompt");
+    document.querySelectorAll("[data-example]").forEach((exampleButton) => {
+        exampleButton.addEventListener("click", () => {
+            promptInput.value = exampleButton.dataset.example;
+            promptInput.focus();
+        });
+    });
 </script>
 {% endblock %}
