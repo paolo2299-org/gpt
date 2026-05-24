@@ -52,7 +52,7 @@ body {
 }
 
 .shell {
-    max-width: 900px;
+    max-width: 820px;
     margin: 0 auto;
     padding: 1.25rem;
 }
@@ -64,20 +64,23 @@ body {
     min-height: calc(100vh - 5.5rem);
 }
 
+.chat-shell.is-empty {
+    justify-content: center;
+    padding-bottom: 12vh;
+}
+
+.chat-shell.has-completion {
+    padding-top: 1.5rem;
+}
+
 .intro {
-    padding: 2.5rem 0 0.5rem;
     text-align: center;
 }
 
 .intro h1 {
     font-size: 2rem;
-    margin: 0 0 0.4rem;
-}
-
-.intro p {
-    color: var(--muted);
-    margin: 0 auto;
-    max-width: 35rem;
+    font-weight: 600;
+    margin: 0;
 }
 
 .conversation {
@@ -87,15 +90,6 @@ body {
     gap: 0.85rem;
     justify-content: flex-start;
     min-height: 21rem;
-}
-
-.empty-conversation {
-    align-items: center;
-    color: var(--muted);
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    text-align: center;
 }
 
 .message {
@@ -133,7 +127,7 @@ body {
 .composer {
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: 24px;
     box-shadow: var(--shadow);
     padding: 0.65rem;
     position: sticky;
@@ -169,7 +163,7 @@ label {
 textarea {
     width: 100%;
     border: 0;
-    border-radius: 6px;
+    border-radius: 18px;
     color: var(--ink);
     font: inherit;
     padding: 0.7rem 0.75rem;
@@ -189,7 +183,7 @@ textarea:focus {
     appearance: none;
     background: var(--accent);
     border: 0;
-    border-radius: 6px;
+    border-radius: 18px;
     color: #ffffff;
     cursor: pointer;
     display: inline-flex;
@@ -197,7 +191,7 @@ textarea:focus {
     font-weight: 700;
     gap: 0.65rem;
     justify-content: center;
-    min-width: 8.5rem;
+    min-width: 7.5rem;
     padding: 0.75rem 1rem;
 }
 

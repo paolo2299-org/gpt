@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="chat-shell">
+<section class="chat-shell {% if completion %}has-completion{% else %}is-empty{% endif %}">
     <div class="intro">
-        <h1>Complete a phrase</h1>
-        <p>Add the start of a phrase and the model will continue it in the style it learned.</p>
+        <h1>Where should we begin?</h1>
     </div>
 
-    <section class="conversation" aria-live="polite">
-        {% if completion %}
+    {% if completion %}
+        <section class="conversation" aria-live="polite">
             <article class="message user-message">
                 <div class="message-label">Start of phrase</div>
                 <p>{{ form.prompt }}</p>
@@ -16,12 +15,8 @@
                 <div class="message-label">Completed phrase</div>
                 <p>{{ completion }}</p>
             </article>
-        {% else %}
-            <div class="empty-conversation">
-                <p>Start with a sentence fragment, a clause, or the opening line of a scene.</p>
-            </div>
-        {% endif %}
-    </section>
+        </section>
+    {% endif %}
 
     <form class="composer" method="post" data-completion-form>
         <label class="sr-only" for="prompt">Start of phrase</label>
