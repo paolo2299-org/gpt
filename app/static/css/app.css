@@ -86,8 +86,7 @@ label {
     gap: 0.35rem;
 }
 
-textarea,
-input {
+textarea {
     width: 100%;
     border: 1px solid var(--line);
     border-radius: 6px;
@@ -101,33 +100,56 @@ textarea {
     resize: vertical;
 }
 
-textarea:focus,
-input:focus {
+textarea:focus {
     border-color: var(--accent);
     outline: 3px solid rgba(34, 92, 114, 0.14);
 }
 
-.controls {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin: 1rem 0;
-}
-
 .primary-button {
+    align-items: center;
     appearance: none;
     background: var(--accent);
     border: 0;
     border-radius: 6px;
     color: #ffffff;
     cursor: pointer;
+    display: inline-flex;
     font: inherit;
     font-weight: 700;
+    gap: 0.65rem;
+    justify-content: center;
+    margin-top: 1rem;
+    min-width: 8.5rem;
     padding: 0.75rem 1rem;
 }
 
 .primary-button:hover {
     background: var(--accent-strong);
+}
+
+.primary-button:disabled {
+    cursor: wait;
+    opacity: 0.82;
+}
+
+.spinner {
+    animation: spin 0.8s linear infinite;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    display: none;
+    height: 1rem;
+    width: 1rem;
+}
+
+.is-submitting .spinner {
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .error {
@@ -197,10 +219,6 @@ input:focus {
     .workspace {
         grid-template-columns: 1fr;
     }
-
-    .controls {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 @media (max-width: 520px) {
@@ -209,12 +227,7 @@ input:focus {
         flex-direction: column;
     }
 
-    .controls {
-        grid-template-columns: 1fr;
-    }
-
     .shell {
         padding: 0.75rem;
     }
 }
-

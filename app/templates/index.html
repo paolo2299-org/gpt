@@ -1,32 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="workspace">
-    <form class="composer" method="post">
+    <form class="composer" method="post" data-completion-form>
         <div class="field">
-            <label for="prompt">Prompt to continue</label>
+            <label for="prompt">Start of phrase</label>
             <textarea id="prompt" name="prompt" rows="8" autofocus>{{ form.prompt }}</textarea>
         </div>
 
-        <div class="controls" aria-label="Generation settings">
-            <label>
-                Tokens
-                <input type="number" name="max_new_tokens" value="{{ form.max_new_tokens }}" min="1" max="{{ max_new_tokens_limit }}">
-            </label>
-            <label>
-                Temperature
-                <input type="number" name="temperature" value="{{ form.temperature }}" min="0" max="2" step="0.1">
-            </label>
-            <label>
-                Top K
-                <input type="number" name="top_k" value="{{ form.top_k if form.top_k is not none else '' }}" min="1" max="200">
-            </label>
-            <label>
-                Seed
-                <input type="number" name="seed" value="{{ form.seed }}" min="0">
-            </label>
-        </div>
-
-        <button class="primary-button" type="submit">Complete</button>
+        <button class="primary-button" type="submit">
+            <span class="button-label">Complete</span>
+            <span class="spinner" aria-hidden="true"></span>
+        </button>
 
         {% if error %}
             <p class="error">{{ error }}</p>
@@ -35,7 +19,7 @@
 
     <section class="result-panel" aria-live="polite">
         <div class="result-header">
-            <h1>Continuation</h1>
+            <h1>End of phrase</h1>
             <span>{{ weights_path }}</span>
         </div>
         {% if completion %}
@@ -47,5 +31,13 @@
         {% endif %}
     </section>
 </section>
+<script>
+    const completionForm = document.querySelector("[data-completion-form]");
+    if (completionForm) {
+        completionForm.addEventListener("submit", () => {
+            completionForm.classList.add("is-submitting");
+            completionForm.querySelector("button[type='submit']").disabled = true;
+        });
+    }
+</script>
 {% endblock %}
-
