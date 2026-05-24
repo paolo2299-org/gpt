@@ -76,7 +76,7 @@ projects:
 - Public host: `gpt.pdlawson.com`
 - Production compose files: `compose.yml` + `compose.prod.yml`
 - External reverse-proxy network: `web`
-- Expected VPS working directory: `/srv/gpt/app/large-language-model`
+- Expected VPS working directory: `/srv/gpt/app/gpt`
 - Expected model path on VPS: `/srv/gpt/models/model.jane-austen-5.pth`
 
 The model weights are not baked into the Docker image. Copy
