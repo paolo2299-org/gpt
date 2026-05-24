@@ -35,5 +35,5 @@ training methodology while reducing model dimensions for practical demos. Use
 ## Tests
 
 ```bash
-.venv/bin/python -m unittest discover -s tests
+.venv/bin/python -m pytest tests
 ```
