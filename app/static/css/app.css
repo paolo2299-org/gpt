@@ -52,30 +52,92 @@ body {
 }
 
 .shell {
-    max-width: 1180px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 1.25rem;
 }
 
-.workspace {
-    display: grid;
-    grid-template-columns: minmax(320px, 0.95fr) minmax(360px, 1.05fr);
+.chat-shell {
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
-    align-items: start;
+    min-height: calc(100vh - 5.5rem);
 }
 
-.composer,
-.result-panel {
+.intro {
+    padding: 2.5rem 0 0.5rem;
+    text-align: center;
+}
+
+.intro h1 {
+    font-size: 2rem;
+    margin: 0 0 0.4rem;
+}
+
+.intro p {
+    color: var(--muted);
+    margin: 0 auto;
+    max-width: 35rem;
+}
+
+.conversation {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.85rem;
+    justify-content: flex-start;
+    min-height: 21rem;
+}
+
+.empty-conversation {
+    align-items: center;
+    color: var(--muted);
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    text-align: center;
+}
+
+.message {
     background: var(--surface);
     border: 1px solid var(--line);
     border-radius: 8px;
     box-shadow: var(--shadow);
-    padding: 1rem;
+    line-height: 1.65;
+    max-width: 82%;
+    padding: 0.9rem 1rem;
 }
 
-.field {
-    display: grid;
-    gap: 0.5rem;
+.message p {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.user-message {
+    align-self: flex-end;
+    background: #eef5f7;
+    border-color: rgba(34, 92, 114, 0.22);
+}
+
+.model-message {
+    align-self: flex-start;
+}
+
+.message-label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.composer {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    padding: 0.65rem;
+    position: sticky;
+    bottom: 1rem;
 }
 
 label {
@@ -86,9 +148,27 @@ label {
     gap: 0.35rem;
 }
 
+.sr-only {
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.input-bar {
+    align-items: flex-end;
+    display: flex;
+    gap: 0.65rem;
+}
+
 textarea {
     width: 100%;
-    border: 1px solid var(--line);
+    border: 0;
     border-radius: 6px;
     color: var(--ink);
     font: inherit;
@@ -96,12 +176,11 @@ textarea {
 }
 
 textarea {
-    min-height: 16rem;
+    min-height: 3.2rem;
     resize: vertical;
 }
 
 textarea:focus {
-    border-color: var(--accent);
     outline: 3px solid rgba(34, 92, 114, 0.14);
 }
 
@@ -118,7 +197,6 @@ textarea:focus {
     font-weight: 700;
     gap: 0.65rem;
     justify-content: center;
-    margin-top: 1rem;
     min-width: 8.5rem;
     padding: 0.75rem 1rem;
 }
@@ -159,51 +237,18 @@ textarea:focus {
     padding-left: 0.75rem;
 }
 
-.result-header {
-    align-items: baseline;
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-}
-
-.result-header h1 {
-    font-size: 1.1rem;
-    margin: 0;
-}
-
-.result-header span {
-    color: var(--muted);
-    font-size: 0.78rem;
-    overflow-wrap: anywhere;
-    text-align: right;
-}
-
-.completion {
-    background: #fbfbf8;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    line-height: 1.65;
-    margin: 0;
-    min-height: 21.5rem;
-    overflow: auto;
-    padding: 1rem;
-    white-space: pre-wrap;
-}
-
-.empty-state {
-    background: #fbfbf8;
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    min-height: 21.5rem;
-}
-
 @media (max-width: 820px) {
-    .workspace {
-        grid-template-columns: 1fr;
+    .message {
+        max-width: 92%;
+    }
+
+    .input-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .primary-button {
+        width: 100%;
     }
 }
 
@@ -215,5 +260,13 @@ textarea:focus {
 
     .shell {
         padding: 0.75rem;
+    }
+
+    .intro {
+        padding-top: 1.25rem;
+    }
+
+    .intro h1 {
+        font-size: 1.55rem;
     }
 }

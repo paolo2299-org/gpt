@@ -1,33 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="workspace">
-    <form class="composer" method="post" data-completion-form>
-        <div class="field">
-            <label for="prompt">Start of phrase</label>
-            <textarea id="prompt" name="prompt" rows="8" autofocus>{{ form.prompt }}</textarea>
-        </div>
+<section class="chat-shell">
+    <div class="intro">
+        <h1>Complete a phrase</h1>
+        <p>Add the start of a phrase and the model will continue it in the style it learned.</p>
+    </div>
 
-        <button class="primary-button" type="submit">
-            <span class="button-label">Complete</span>
-            <span class="spinner" aria-hidden="true"></span>
-        </button>
+    <section class="conversation" aria-live="polite">
+        {% if completion %}
+            <article class="message user-message">
+                <div class="message-label">Start of phrase</div>
+                <p>{{ form.prompt }}</p>
+            </article>
+            <article class="message model-message">
+                <div class="message-label">Completed phrase</div>
+                <p>{{ completion }}</p>
+            </article>
+        {% else %}
+            <div class="empty-conversation">
+                <p>Start with a sentence fragment, a clause, or the opening line of a scene.</p>
+            </div>
+        {% endif %}
+    </section>
+
+    <form class="composer" method="post" data-completion-form>
+        <label class="sr-only" for="prompt">Start of phrase</label>
+        <div class="input-bar">
+            <textarea
+                id="prompt"
+                name="prompt"
+                rows="2"
+                placeholder="Add the start of a phrase..."
+                autofocus
+            >{{ form.prompt }}</textarea>
+            <button class="primary-button" type="submit" aria-label="Complete phrase">
+                <span class="button-label">Complete</span>
+                <span class="spinner" aria-hidden="true"></span>
+            </button>
+        </div>
 
         {% if error %}
             <p class="error">{{ error }}</p>
         {% endif %}
     </form>
-
-    <section class="result-panel" aria-live="polite">
-        <div class="result-header">
-            <h1>End of phrase</h1>
-            <span>{{ weights_path }}</span>
-        </div>
-        {% if completion %}
-            <pre class="completion">{{ completion }}</pre>
-        {% else %}
-            <div class="empty-state"></div>
-        {% endif %}
-    </section>
 </section>
 <script>
     const completionForm = document.querySelector("[data-completion-form]");
