@@ -6,7 +6,8 @@ def test_index_page_loads(client):
 
     assert response.status_code == 200
     assert b"Start of phrase" in response.data
-    assert b"Where should we begin?" in response.data
+    assert b"JaneGPT" in response.data
+    assert b"trained solely on the complete works of Jane Austen" in response.data
     assert b"Add the start of a phrase..." in response.data
     assert b"Start with a sentence fragment" not in response.data
     assert b"It was a truth" in response.data

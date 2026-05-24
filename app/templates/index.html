@@ -2,7 +2,13 @@
 {% block content %}
 <section class="chat-shell {% if completion %}has-completion{% else %}is-empty{% endif %}">
     <div class="intro">
-        <h1>Where should we begin?</h1>
+        <h1>JaneGPT</h1>
+        <p>
+            A very lightweight LLM model trained solely on the complete works of Jane Austen.
+            Start a phrase and generate text that Jane Austen might have written. As you will
+            see, it doesn't live up to the real Jane, or even make a whole lot of sense, but it
+            does have the flavour of the original texts.
+        </p>
     </div>
 
     {% if completion %}
