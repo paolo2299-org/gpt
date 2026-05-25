@@ -1,6 +1,6 @@
 # LLM From Scratch Demo
 
-This project adapts the chapter 5 pretraining workflow from Sebastian Raschka's
+This project adapts the models and code from Sebastian Raschka's
 `LLMs-from-scratch` repository into a small, scriptable demo.
 
 ## Scripts
