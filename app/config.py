@@ -14,7 +14,7 @@ class Config:
     SITE_TITLE = "JaneGPT"
     AUTHOR_NAME = "Jane Austen"
 
-    MODEL_WEIGHTS_PATH = str(Path("model.dickens.pth"))
+    MODEL_WEIGHTS_PATH = None
     MODEL_PRESET = "book-124M"
     MODEL_DEVICE = "auto"
     LOAD_MODEL = True

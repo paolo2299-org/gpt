@@ -53,8 +53,7 @@ Run the web UI with Docker Compose:
 make run
 ```
 
-The web app loads `model.dickens.pth` on boot by default. Override that with
-`MODEL_WEIGHTS_PATH=/path/to/model.pth` and, if needed, `MODEL_PRESET=book-124M`.
+The web app requires `MODEL_WEIGHTS_PATH` to be set. Optionally set `MODEL_PRESET=book-124M` if the weights use the larger model shape.
 
 The default preset is `demo-small`, which keeps the chapter 5 context length and
 training methodology while reducing model dimensions for practical demos. Use

@@ -11,9 +11,10 @@ projects:
 - Expected model directory on VPS: `/srv/gpt/models`
 
 The model weights are not baked into the Docker image. Production mounts the
-whole `/srv/gpt/models` directory into the container at `/models`, so any model
-file in that directory can be loaded by setting `MODEL_WEIGHTS_PATH`, for
-example `MODEL_WEIGHTS_PATH=/models/model.dickens.pth`.
+whole `/srv/gpt/models` directory into the container at `/models`. Set
+`MODEL_WEIGHTS_PATH` to the path of the model file to load, for example
+`MODEL_WEIGHTS_PATH=/models/model.pth`. This variable is required — the app
+will not start without it.
 
 Production commands on the VPS:
 
