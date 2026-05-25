@@ -35,7 +35,7 @@ DEFAULT_TRAINING_SETTINGS = {
     "eval_freq": 5,
     "eval_iter": 1,
     "train_ratio": 0.90,
-    "start_context": "Every effort moves you",
+    "start_context": "I wandered lonely as a",
 }
 
 BOOK_TEXT_PATH = (

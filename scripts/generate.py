@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate text from saved demo GPT weights.")
     parser.add_argument("--weights", type=Path, required=True)
     parser.add_argument("--preset", choices=sorted(MODEL_PRESETS), default=None)
-    parser.add_argument("--prompt", default="Every effort moves you")
+    parser.add_argument("--prompt", default="I wandered lonely as a")
     parser.add_argument("--max-new-tokens", type=int, default=25)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--top-k", type=int, default=None)

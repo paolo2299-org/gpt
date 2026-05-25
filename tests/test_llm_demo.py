@@ -50,7 +50,7 @@ def test_seeded_random_generation_is_deterministic():
 
 
 def test_create_dataloader_v1_from_text():
-    text = "Every effort moves you forward. " * 20
+    text = "I wandered lonely as a cloud." * 20
 
     dataloader = create_dataloader_v1(
         text,
@@ -75,9 +75,9 @@ def test_tiny_pretraining_saves_and_loads_weights(tmp_path):
         "eval_freq": 1000,
         "eval_iter": 1,
         "train_ratio": 0.8,
-        "start_context": "Every effort moves you",
+        "start_context": "I wandered lonely as a",
     }
-    text = "Every effort moves you forward. " * 80
+    text = "I wandered lonely as a cloud." * 80
 
     _, _, _, model = pretrain_from_text(
         text_data=text,
@@ -113,7 +113,7 @@ def test_pretraining_calls_eval_callback():
         "eval_freq": 1000,
         "eval_iter": 1,
         "train_ratio": 0.8,
-        "start_context": "Every effort moves you",
+        "start_context": "I wandered lonely as a",
     }
     evals = []
 
@@ -121,7 +121,7 @@ def test_pretraining_calls_eval_callback():
         evals.append(kwargs)
 
     pretrain_from_text(
-        text_data="Every effort moves you forward. " * 80,
+        text_data="I wandered lonely as a cloud." * 80,
         gpt_config=TINY_CONFIG,
         settings=settings,
         device=torch.device("cpu"),

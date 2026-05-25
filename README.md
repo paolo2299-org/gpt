@@ -37,8 +37,8 @@ For a larger plain-text corpus, around a few MB, this is a useful starting run:
 Generate with saved weights:
 
 ```bash
-.venv/bin/python scripts/generate.py --weights model.pth --prompt "Every effort moves you"
-.venv/bin/python scripts/generate.py --weights model.best.pth --prompt "Every effort moves you"
+.venv/bin/python scripts/generate.py --weights model.pth --prompt "I wandered lonely as a"
+.venv/bin/python scripts/generate.py --weights model.best.pth --prompt "I wandered lonely as a"
 ```
 
 Run the local web UI directly from the virtualenv:
