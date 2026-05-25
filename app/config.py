@@ -11,7 +11,7 @@ class Config:
     SESSION_COOKIE_SAMESITE = "Lax"
     SESSION_COOKIE_SECURE = False
 
-    MODEL_WEIGHTS_PATH = str(Path("model.jane-austen-5.pth"))
+    MODEL_WEIGHTS_PATH = str(Path("model.dickens.pth"))
     MODEL_PRESET = "book-124M"
     MODEL_DEVICE = "auto"
     LOAD_MODEL = True
