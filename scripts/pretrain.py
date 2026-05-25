@@ -11,7 +11,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import torch
 
 from llm_demo.config import (
-    BOOK_TEXT_PATH,
     DEFAULT_PRESET,
     MODEL_PRESETS,
     get_model_config,
@@ -33,7 +32,7 @@ def resolve_device(device_name: str) -> torch.device:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Pretrain the demo GPT model on a text file.")
     parser.add_argument("--preset", default=DEFAULT_PRESET, choices=sorted(MODEL_PRESETS))
-    parser.add_argument("--input-file", type=Path, default=BOOK_TEXT_PATH)
+    parser.add_argument("--input-file", type=Path, required=True)
     parser.add_argument("--output", type=Path, default=Path("model.pth"))
     parser.add_argument(
         "--best-output",
@@ -69,10 +68,7 @@ def main() -> None:
     args = parse_args()
     input_file = args.input_file.expanduser()
     if not input_file.exists():
-        raise FileNotFoundError(
-            f"Input text file not found: {input_file}. "
-            "Pass --input-file to train on another text file."
-        )
+        raise FileNotFoundError(f"Input text file not found: {input_file}")
 
     config = get_model_config(args.preset)
     settings = get_training_settings(

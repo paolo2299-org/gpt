@@ -11,10 +11,9 @@ Create an untrained model with deterministic random weights:
 .venv/bin/python scripts/random_demo.py
 ```
 
-Pretrain on the book text, or pass your own text file:
+Pretrain on a text file:
 
 ```bash
-.venv/bin/python scripts/pretrain.py --output model.pth
 .venv/bin/python scripts/pretrain.py --input-file path/to/text.txt --output model.pth
 ```
 
