@@ -77,11 +77,12 @@ projects:
 - Production compose files: `compose.yml` + `compose.prod.yml`
 - External reverse-proxy network: `web`
 - Expected VPS working directory: `/srv/gpt/app/gpt`
-- Expected model path on VPS: `/srv/gpt/models/model.jane-austen-5.pth`
+- Expected model directory on VPS: `/srv/gpt/models`
 
-The model weights are not baked into the Docker image. Copy
-`model.jane-austen-5.pth` to the VPS path above before starting the production
-service.
+The model weights are not baked into the Docker image. Production mounts the
+whole `/srv/gpt/models` directory into the container at `/models`, so any model
+file in that directory can be loaded by setting `MODEL_WEIGHTS_PATH`, for
+example `MODEL_WEIGHTS_PATH=/models/model.jane-austen-5.pth`.
 
 Production commands on the VPS:
 

@@ -5,8 +5,8 @@ services:
     restart: unless-stopped
     volumes:
       - type: bind
-        source: /srv/gpt/models/model.jane-austen-5.pth
-        target: /models/model.jane-austen-5.pth
+        source: /srv/gpt/models
+        target: /models
         read_only: true
         bind:
           create_host_path: false
