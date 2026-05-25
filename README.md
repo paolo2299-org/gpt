@@ -55,9 +55,7 @@ make run
 
 The web app requires `MODEL_WEIGHTS_PATH` to be set. Optionally set `MODEL_PRESET=book-124M` if the weights use the larger model shape.
 
-The default preset is `demo-small`, which keeps the chapter 5 context length and
-training methodology while reducing model dimensions for practical demos. Use
-`--preset book-124M` for the closer chapter 5 model shape.
+The default preset is `book-124M`. Use `--preset demo-small` for a smaller model shape suited to quick demos.
 
 ## Tests
 

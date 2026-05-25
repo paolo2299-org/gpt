@@ -25,7 +25,7 @@ MODEL_PRESETS = {
     },
 }
 
-DEFAULT_PRESET = "demo-small"
+DEFAULT_PRESET = "book-124M"
 
 DEFAULT_TRAINING_SETTINGS = {
     "learning_rate": 5e-4,
