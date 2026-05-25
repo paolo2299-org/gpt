@@ -54,7 +54,7 @@ Run the web UI with Docker Compose:
 make run
 ```
 
-The web app loads `model.jane-austen-5.pth` on boot by default. Override that with
+The web app loads `model.dickens.pth` on boot by default. Override that with
 `MODEL_WEIGHTS_PATH=/path/to/model.pth` and, if needed, `MODEL_PRESET=book-124M`.
 
 The default preset is `demo-small`, which keeps the chapter 5 context length and
@@ -82,7 +82,7 @@ projects:
 The model weights are not baked into the Docker image. Production mounts the
 whole `/srv/gpt/models` directory into the container at `/models`, so any model
 file in that directory can be loaded by setting `MODEL_WEIGHTS_PATH`, for
-example `MODEL_WEIGHTS_PATH=/models/model.jane-austen-5.pth`.
+example `MODEL_WEIGHTS_PATH=/models/model.dickens.pth`.
 
 Production commands on the VPS:
 

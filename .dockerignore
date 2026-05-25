@@ -4,10 +4,6 @@
 .ipynb_checkpoints/
 __pycache__/
 *.py[cod]
-*.pth
-*.pth.json
-charles-dickens.txt
-jane-austen.txt
-cd-david-copperfield.txt
-pg*.txt
-
+models/*.pth
+models/*.pth.json
+texts/*.txt

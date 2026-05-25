@@ -5,5 +5,6 @@ __pycache__/
 .pytest_cache/
 model.pth
 model.pth.json
-*.pth
-*.pth.json
+models/*.pth
+models/*.pth.json
+texts/*.txt

@@ -11,8 +11,8 @@ services:
     volumes:
       - .:/app
       - type: bind
-        source: ./model.jane-austen-5.pth
-        target: /models/model.jane-austen-5.pth
+        source: ./models
+        target: /models
         read_only: true
         bind:
           create_host_path: false

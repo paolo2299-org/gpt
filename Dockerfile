@@ -3,7 +3,7 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PORT=8080 \
-    MODEL_WEIGHTS_PATH=/models/model.jane-austen-5.pth \
+    MODEL_WEIGHTS_PATH=/models/model.dickens.pth \
     MODEL_PRESET=book-124M \
     MODEL_DEVICE=cpu \
     WEB_CONCURRENCY=1
