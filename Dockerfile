@@ -17,5 +17,6 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 
 COPY app ./app
 COPY llm_demo ./llm_demo
+COPY gunicorn.conf.py .
 
-CMD ["sh", "-c", "exec gunicorn --bind \":${PORT}\" --workers \"${WEB_CONCURRENCY}\" --threads 1 --timeout 300 \"app:create_app()\""]
+CMD ["sh", "-c", "exec gunicorn --config gunicorn.conf.py --bind \":${PORT}\" --workers \"${WEB_CONCURRENCY}\" --threads 1 --timeout 300 --preload \"app:create_app()\""]
