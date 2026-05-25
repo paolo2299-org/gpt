@@ -53,7 +53,7 @@ Run the web UI with Docker Compose:
 make run
 ```
 
-The web app requires `MODEL_WEIGHTS_PATH` to be set. Optionally set `MODEL_PRESET=book-124M` if the weights use the larger model shape.
+The web app requires `MODEL_WEIGHTS_PATH` to be set. Set `MODEL_PRESET=demo-small` if the weights use the smaller model shape.
 
 The default preset is `book-124M`.
 
