@@ -1,14 +1,14 @@
 :root {
-    color-scheme: light;
-    --bg: #f7f7f4;
-    --surface: #ffffff;
-    --ink: #242424;
-    --muted: #70706a;
-    --line: #deded6;
-    --accent: #225c72;
-    --accent-strong: #17485a;
-    --danger: #9d2b2b;
-    --shadow: 0 18px 45px rgba(36, 36, 36, 0.08);
+    color-scheme: dark;
+    --bg: #0d0f1a;
+    --surface: #161926;
+    --ink: #e2e4f0;
+    --muted: #a8abbf;
+    --line: #272b3d;
+    --accent: #d4621a;
+    --accent-strong: #b85210;
+    --danger: #e05c5c;
+    --shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -65,6 +65,15 @@ body {
     margin-top: 0.85rem;
 }
 
+.repo-link {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.repo-link:hover {
+    text-decoration: underline;
+}
+
 .conversation {
     display: flex;
     flex: 1;
@@ -91,8 +100,8 @@ body {
 
 .user-message {
     align-self: flex-end;
-    background: #eef5f7;
-    border-color: rgba(34, 92, 114, 0.22);
+    background: #1c2040;
+    border-color: rgba(212, 98, 26, 0.3);
 }
 
 .model-message {
@@ -144,6 +153,7 @@ label {
 
 textarea {
     width: 100%;
+    background: transparent;
     border: 0;
     border-radius: 18px;
     color: var(--ink);
@@ -157,7 +167,7 @@ textarea {
 }
 
 textarea:focus {
-    outline: 3px solid rgba(34, 92, 114, 0.14);
+    outline: 3px solid rgba(212, 98, 26, 0.25);
 }
 
 .primary-button {
@@ -204,6 +214,28 @@ textarea:focus {
     to {
         transform: rotate(360deg);
     }
+}
+
+.try-again-bar {
+    display: flex;
+    justify-content: center;
+}
+
+.try-again-button {
+    appearance: none;
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--muted);
+    cursor: pointer;
+    font: inherit;
+    padding: 0.55rem 1.25rem;
+    text-decoration: none;
+}
+
+.try-again-button:hover {
+    border-color: var(--accent);
+    color: var(--ink);
 }
 
 .error {

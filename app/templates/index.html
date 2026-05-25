@@ -12,6 +12,7 @@
         <p>
             To achieve realistic results would take terabytes of data and many millions of dollars.
         </p>
+        <p><a class="repo-link" href="https://github.com/paolo2299-org/gpt/tree/main/llm_demo" target="_blank" rel="noopener">See the code for this LLM</a></p>
     </div>
 
     {% if completion %}
@@ -25,8 +26,12 @@
                 <p>{{ completion }}</p>
             </article>
         </section>
+        <div class="try-again-bar">
+            <a class="try-again-button" href="/">Try again</a>
+        </div>
     {% endif %}
 
+    {% if not completion %}
     <form class="composer" method="post" data-completion-form>
         <label class="sr-only" for="prompt">Start of phrase</label>
         <div class="input-bar">
@@ -48,7 +53,6 @@
         {% endif %}
     </form>
 
-    {% if not completion %}
         <div class="examples" aria-label="Example phrase starts">
             <button type="button" data-example="It was a truth">It was a truth</button>
             <button type="button" data-example="The morning was">The morning was</button>
