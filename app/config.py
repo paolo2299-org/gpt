@@ -15,7 +15,7 @@ class Config:
     AUTHOR_NAME = "Jane Austen"
 
     MODEL_WEIGHTS_PATH = None
-    MODEL_PRESET = "book-124M"
+    MODEL_PRESET = "124M"
     MODEL_DEVICE = "auto"
     LOAD_MODEL = True
 

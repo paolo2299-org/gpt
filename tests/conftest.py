@@ -18,7 +18,7 @@ def app():
             "LOAD_MODEL": False,
             "COMPLETER": FakeCompleter(),
             "MODEL_WEIGHTS_PATH": "test-model.pth",
-            "MODEL_PRESET": "book-124M",
+            "MODEL_PRESET": "124M",
         }
     )
 

@@ -24,7 +24,7 @@ For a larger plain-text corpus, around a few MB, this is a useful starting run:
 
 ```bash
 .venv/bin/python scripts/pretrain.py \
-  --preset book-124M \
+  --preset 124M \
   --input-file path/to/larger-text.txt \
   --num-epochs 10 \
   --learning-rate 1e-4 \
@@ -55,7 +55,7 @@ make run
 
 The web app requires `MODEL_WEIGHTS_PATH` to be set. Set `MODEL_PRESET=demo-small` if the weights use the smaller model shape.
 
-The default preset is `book-124M`.
+The default preset is `124M`.
 
 ## Tests
 
