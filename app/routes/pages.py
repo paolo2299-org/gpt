@@ -43,6 +43,8 @@ def index() -> str:
         error=error,
         model_name=current_app.config["MODEL_PRESET"],
         weights_path=current_app.config["MODEL_WEIGHTS_PATH"],
+        site_title=current_app.config["SITE_TITLE"],
+        author_name=current_app.config["AUTHOR_NAME"],
     )
 
 

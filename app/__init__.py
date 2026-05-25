@@ -17,6 +17,8 @@ def create_app(test_config: dict[str, object] | None = None) -> Flask:
         MODEL_WEIGHTS_PATH=os.environ.get("MODEL_WEIGHTS_PATH", app.config["MODEL_WEIGHTS_PATH"]),
         MODEL_PRESET=os.environ.get("MODEL_PRESET", app.config["MODEL_PRESET"]),
         MODEL_DEVICE=os.environ.get("MODEL_DEVICE", app.config["MODEL_DEVICE"]),
+        SITE_TITLE=os.environ.get("SITE_TITLE", app.config["SITE_TITLE"]),
+        AUTHOR_NAME=os.environ.get("AUTHOR_NAME", app.config["AUTHOR_NAME"]),
     )
 
     if test_config:
