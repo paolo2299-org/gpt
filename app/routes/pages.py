@@ -21,7 +21,8 @@ def index() -> str:
     error = ""
 
     if request.method == "POST":
-        if not form.prompt.strip():
+        prompt = form.prompt.strip()
+        if not prompt:
             error = "Enter a prompt to continue."
         else:
             completer = current_app.extensions.get("llm_completer")
@@ -29,7 +30,7 @@ def index() -> str:
                 error = "The model is not loaded."
             else:
                 completion = completer.complete(
-                    prompt=form.prompt,
+                    prompt=prompt,
                     max_new_tokens=current_app.config["DEFAULT_MAX_NEW_TOKENS"],
                     temperature=current_app.config["DEFAULT_TEMPERATURE"],
                     top_k=current_app.config["DEFAULT_TOP_K"],
