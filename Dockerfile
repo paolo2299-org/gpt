@@ -11,7 +11,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 COPY requirements-web.txt .
-RUN pip install --no-cache-dir -r requirements-web.txt
+# Install CPU-only torch first so pip doesn't pull the ~2GB CUDA wheel from PyPI
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
+    pip install --no-cache-dir -r requirements-web.txt
 
 COPY app ./app
 COPY llm_demo ./llm_demo
