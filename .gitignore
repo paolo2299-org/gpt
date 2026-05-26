@@ -8,3 +8,4 @@ model.pth.json
 models/*.pth
 models/*.pth.json
 texts/*.txt
+.env
