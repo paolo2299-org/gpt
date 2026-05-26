@@ -1,5 +1,6 @@
 services:
   gpt:
+    image: ghcr.io/paolo2299-org/gpt:main
     environment:
       FLASK_ENV: production
     restart: unless-stopped

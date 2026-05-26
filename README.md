@@ -50,8 +50,11 @@ make flask-run
 Run the web UI with Docker Compose:
 
 ```bash
+cp .env.example .env  # first time only; edit values as needed
 make run
 ```
+
+The Docker Compose setup reads environment variables from `.env`, so this file must exist before running `make run`, `make dev`, or `make docker-test`.
 
 The web app requires `MODEL_WEIGHTS_PATH` to be set. Set `MODEL_PRESET=demo-small` if the weights use the smaller model shape.
 
