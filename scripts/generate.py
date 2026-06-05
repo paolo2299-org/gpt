@@ -10,9 +10,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import tiktoken
 import torch
 
-from llm_demo.config import DEFAULT_PRESET, MODEL_PRESETS, get_model_config
-from llm_demo.generation import generate, text_to_token_ids, token_ids_to_text
-from llm_demo.model import GPTModel
+from llm.config import DEFAULT_PRESET, MODEL_PRESETS, get_model_config
+from llm.generation import generate, text_to_token_ids, token_ids_to_text
+from llm.model import GPTModel
 
 
 def resolve_device(device_name: str) -> torch.device:

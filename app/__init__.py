@@ -1,4 +1,4 @@
-"""Flask application factory for the local LLM completion UI."""
+"""Flask application factory for the multi-demo LLM web UI."""
 
 from __future__ import annotations
 
@@ -14,17 +14,15 @@ def create_app(test_config: dict[str, object] | None = None) -> Flask:
 
     app.config.from_object("app.config.Config")
     app.config.update(
-        MODEL_WEIGHTS_PATH=os.environ.get("MODEL_WEIGHTS_PATH"),
-        MODEL_PRESET=os.environ.get("MODEL_PRESET", app.config["MODEL_PRESET"]),
+        WEIGHTS_DIR=os.environ.get("WEIGHTS_DIR", app.config["WEIGHTS_DIR"]),
         MODEL_DEVICE=os.environ.get("MODEL_DEVICE", app.config["MODEL_DEVICE"]),
         SITE_TITLE=os.environ.get("SITE_TITLE", app.config["SITE_TITLE"]),
-        AUTHOR_NAME=os.environ.get("AUTHOR_NAME", app.config["AUTHOR_NAME"]),
     )
 
     if test_config:
         app.config.update(test_config)
 
-    _init_completer(app)
+    _init_registry(app)
 
     from app.routes.pages import bp as pages_bp
 
@@ -32,19 +30,16 @@ def create_app(test_config: dict[str, object] | None = None) -> Flask:
     return app
 
 
-def _init_completer(app: Flask) -> None:
-    injected_completer = app.config.get("COMPLETER")
-    if injected_completer is not None:
-        app.extensions["llm_completer"] = injected_completer
+def _init_registry(app: Flask) -> None:
+    injected_registry = app.config.get("DEMO_REGISTRY")
+    if injected_registry is not None:
+        app.extensions["demos"] = injected_registry
         return
 
-    if not app.config.get("LOAD_MODEL", True):
-        return
+    from app.services.registry import DemoRegistry
 
-    if not app.config.get("MODEL_WEIGHTS_PATH"):
-        raise RuntimeError("MODEL_WEIGHTS_PATH environment variable is required")
-
-    from app.services.completer import LLMCompleter
-
-    app.extensions["llm_completer"] = LLMCompleter.from_config(app.config)
-
+    app.extensions["demos"] = DemoRegistry(
+        weights_dir=app.config["WEIGHTS_DIR"],
+        device_name=app.config["MODEL_DEVICE"],
+        runners=app.config.get("DEMO_RUNNERS") or None,
+    )

@@ -74,6 +74,66 @@ body {
     text-decoration: underline;
 }
 
+.back-link-row {
+    text-align: left;
+}
+
+.back-link {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: var(--ink);
+}
+
+.landing {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-top: 8vh;
+}
+
+.demo-list {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    list-style: none;
+    margin: 0 auto;
+    max-width: 42rem;
+    padding: 0;
+    width: 100%;
+}
+
+.demo-card a {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    color: inherit;
+    display: block;
+    height: 100%;
+    padding: 1.1rem 1.25rem;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+}
+
+.demo-card a:hover {
+    border-color: var(--accent);
+}
+
+.demo-card h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.4rem;
+}
+
+.demo-card p {
+    color: var(--muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
 .conversation {
     display: flex;
     flex: 1;

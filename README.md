@@ -56,9 +56,13 @@ make run
 
 The Docker Compose setup reads environment variables from `.env`, so this file must exist before running `make run`, `make dev`, or `make docker-test`.
 
-The web app requires `MODEL_WEIGHTS_PATH` to be set. Set `MODEL_PRESET=demo-small` if the weights use the smaller model shape.
+The web app hosts **multiple demos** from a single weights directory. Set
+`WEIGHTS_DIR` to the folder of `.pth` files (default `weights`). Each demo
+defined in `app/demos.py` names the weights file it needs (e.g.
+`model.dickens.pth` for JaneGPT) and appears on the landing page only when that
+file is present. Models load lazily on a demo's first request.
 
-The default preset is `124M`.
+The default training preset is `124M`; `demo-small` is a tiny shape for fast checks.
 
 ## Tests
 

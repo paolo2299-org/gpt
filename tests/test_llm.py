@@ -3,10 +3,10 @@ from __future__ import annotations
 import tiktoken
 import torch
 
-from llm_demo.config import get_model_config
-from llm_demo.generation import generate, text_to_token_ids, token_ids_to_text
-from llm_demo.model import GPTModel, create_dataloader_v1
-from llm_demo.training import pretrain_from_text
+from llm.config import get_model_config
+from llm.generation import generate, text_to_token_ids, token_ids_to_text
+from llm.model import GPTModel, create_dataloader_v1
+from llm.training import pretrain_from_text
 
 
 TINY_CONFIG = {

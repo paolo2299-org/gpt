@@ -5,8 +5,8 @@ from pathlib import Path
 import tiktoken
 import torch
 
-from llm_demo.generation import generate_text_simple, text_to_token_ids, token_ids_to_text
-from llm_demo.model import GPTModel, create_dataloader_v1
+from llm.generation import generate_text_simple, text_to_token_ids, token_ids_to_text
+from llm.model import GPTModel, create_dataloader_v1
 
 
 def calc_loss_batch(input_batch, target_batch, model, device):

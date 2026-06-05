@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ site_title }}{% endblock %}
+{% block content %}
+<section class="landing">
+    <div class="intro">
+        <h1>{{ site_title }}</h1>
+        <p>
+            A set of small GPT demos built from scratch, following Sebastian Raschka's
+            <a class="repo-link" href="https://github.com/rasbt/LLMs-from-scratch" target="_blank" rel="noopener">LLMs-from-scratch</a>.
+            Pick one to try.
+        </p>
+    </div>
+
+    {% if demos %}
+    <ul class="demo-list">
+        {% for demo in demos %}
+        <li class="demo-card">
+            <a href="{{ url_for('pages.demo_page', slug=demo.slug) }}">
+                <h2>{{ demo.title }}</h2>
+                <p>{{ demo.tagline }}</p>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="error">No demos are available yet &mdash; no model weights were found.</p>
+    {% endif %}
+</section>
+{% endblock %}

@@ -8,13 +8,20 @@ projects:
 - Production compose files: `compose.yml` + `compose.prod.yml`
 - External reverse-proxy network: `web`
 - Expected VPS working directory: `/srv/gpt/app/gpt`
-- Expected model directory on VPS: `/srv/gpt/models`
+- Expected weights directory on VPS: `/srv/gpt/weights`
 
 The model weights are not baked into the Docker image. Production mounts the
-whole `/srv/gpt/models` directory into the container at `/models`. Set
-`MODEL_WEIGHTS_PATH` to the path of the model file to load, for example
-`MODEL_WEIGHTS_PATH=/models/model.pth`. This variable is required — the app
-will not start without it.
+whole `/srv/gpt/weights` directory into the container at `/weights`. Set
+`WEIGHTS_DIR` to that directory (default `/weights`). The app serves **multiple
+demos**: each demo (see `app/demos.py`) names a weights file inside `WEIGHTS_DIR`
+(e.g. `model.dickens.pth` for JaneGPT), and a demo appears on the landing page
+only if its file is present. Models are loaded lazily on a demo's first request,
+so the app starts even if some (or all) weight files are missing.
+
+> **Migration note (breaking env change):** the previous single-model variables
+> `MODEL_WEIGHTS_PATH`, `MODEL_PRESET`, `SITE_TITLE`, and `AUTHOR_NAME` are
+> replaced by `WEIGHTS_DIR`. On the VPS, rename `/srv/gpt/models` to
+> `/srv/gpt/weights` and update `.env` before deploying this revision.
 
 Production commands on the VPS:
 

@@ -5,7 +5,7 @@ __pycache__/
 .pytest_cache/
 model.pth
 model.pth.json
-models/*.pth
-models/*.pth.json
+weights/*
+!weights/.gitkeep
 texts/*.txt
 .env

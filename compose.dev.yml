@@ -11,8 +11,8 @@ services:
     volumes:
       - .:/app
       - type: bind
-        source: ./models
-        target: /models
+        source: ./weights
+        target: /weights
         read_only: true
         bind:
           create_host_path: false

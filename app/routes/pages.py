@@ -1,10 +1,10 @@
-"""Completion page routes."""
+"""Landing page and per-demo routes."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from flask import Blueprint, current_app, render_template, request
+from flask import Blueprint, abort, current_app, render_template, request
 
 bp = Blueprint("pages", __name__)
 
@@ -14,8 +14,31 @@ class CompletionForm:
     prompt: str = ""
 
 
-@bp.route("/", methods=["GET", "POST"])
+@bp.route("/")
 def index() -> str:
+    registry = current_app.extensions["demos"]
+    return render_template(
+        "landing.html",
+        demos=registry.available(),
+        site_title=current_app.config["SITE_TITLE"],
+    )
+
+
+@bp.route("/<slug>", methods=["GET", "POST"])
+def demo_page(slug: str) -> str:
+    registry = current_app.extensions["demos"]
+    demo = registry.get(slug)
+    if demo is None:
+        abort(404)
+
+    if demo.task == "completion":
+        return _completion_view(demo, registry)
+
+    # Other tasks (classification, instruction) are not wired up yet.
+    abort(404)
+
+
+def _completion_view(demo, registry) -> str:
     form = _form_from_request()
     completion = ""
     error = ""
@@ -25,27 +48,21 @@ def index() -> str:
         if not prompt:
             error = "Enter a prompt to continue."
         else:
-            completer = current_app.extensions.get("llm_completer")
-            if completer is None:
-                error = "The model is not loaded."
-            else:
-                completion = completer.complete(
-                    prompt=prompt,
-                    max_new_tokens=current_app.config["DEFAULT_MAX_NEW_TOKENS"],
-                    temperature=current_app.config["DEFAULT_TEMPERATURE"],
-                    top_k=current_app.config["DEFAULT_TOP_K"],
-                    seed=current_app.config["DEFAULT_SEED"],
-                )
+            runner = registry.runner_for(demo)
+            completion = runner.complete(
+                prompt=prompt,
+                max_new_tokens=current_app.config["DEFAULT_MAX_NEW_TOKENS"],
+                temperature=current_app.config["DEFAULT_TEMPERATURE"],
+                top_k=current_app.config["DEFAULT_TOP_K"],
+                seed=current_app.config["DEFAULT_SEED"],
+            )
 
     return render_template(
-        "index.html",
+        "completion.html",
+        demo=demo,
         form=form,
         completion=completion,
         error=error,
-        model_name=current_app.config["MODEL_PRESET"],
-        weights_path=current_app.config["MODEL_WEIGHTS_PATH"],
-        site_title=current_app.config["SITE_TITLE"],
-        author_name=current_app.config["AUTHOR_NAME"],
     )
 
 

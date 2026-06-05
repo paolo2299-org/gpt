@@ -8,9 +8,9 @@ from threading import Lock
 import tiktoken
 import torch
 
-from llm_demo.config import get_model_config
-from llm_demo.generation import generate, text_to_token_ids, token_ids_to_text
-from llm_demo.model import GPTModel
+from llm.config import get_model_config
+from llm.generation import generate, text_to_token_ids, token_ids_to_text
+from llm.model import GPTModel
 
 
 class LLMCompleter:
@@ -36,11 +36,11 @@ class LLMCompleter:
         )
 
     @classmethod
-    def from_config(cls, config) -> "LLMCompleter":
+    def from_demo(cls, demo, weights_dir: Path, device_name: str = "auto") -> "LLMCompleter":
         return cls(
-            weights_path=Path(config["MODEL_WEIGHTS_PATH"]),
-            preset=config["MODEL_PRESET"],
-            device_name=config["MODEL_DEVICE"],
+            weights_path=Path(weights_dir) / demo.weights_filename,
+            preset=demo.preset,
+            device_name=device_name,
         )
 
     def complete(

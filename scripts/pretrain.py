@@ -10,13 +10,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import torch
 
-from llm_demo.config import (
+from llm.config import (
     DEFAULT_PRESET,
     MODEL_PRESETS,
     get_model_config,
     get_training_settings,
 )
-from llm_demo.training import pretrain_from_text, read_text
+from llm.training import pretrain_from_text, read_text
 
 
 def resolve_device(device_name: str) -> torch.device:

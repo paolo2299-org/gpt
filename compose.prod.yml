@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     volumes:
       - type: bind
-        source: /srv/gpt/models
-        target: /models
+        source: /srv/gpt/weights
+        target: /weights
         read_only: true
         bind:
           create_host_path: false
