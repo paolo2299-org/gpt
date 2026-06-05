@@ -23,6 +23,46 @@ MODEL_PRESETS = {
         "drop_rate": 0.1,
         "qkv_bias": False,
     },
+    # OpenAI GPT-2 open weights (book ch5). Same GPTModel architecture as the
+    # from-scratch presets above, but with the config the released weights were
+    # trained with: full 1024-token context, query/key/value biases, no dropout.
+    # Fetch the real weights into this shape with ``scripts/fetch_gpt2.py``.
+    "gpt2-small": {
+        "vocab_size": 50257,
+        "context_length": 1024,
+        "emb_dim": 768,
+        "n_heads": 12,
+        "n_layers": 12,
+        "drop_rate": 0.0,
+        "qkv_bias": True,
+    },
+    "gpt2-medium": {
+        "vocab_size": 50257,
+        "context_length": 1024,
+        "emb_dim": 1024,
+        "n_heads": 16,
+        "n_layers": 24,
+        "drop_rate": 0.0,
+        "qkv_bias": True,
+    },
+    "gpt2-large": {
+        "vocab_size": 50257,
+        "context_length": 1024,
+        "emb_dim": 1280,
+        "n_heads": 20,
+        "n_layers": 36,
+        "drop_rate": 0.0,
+        "qkv_bias": True,
+    },
+    "gpt2-xl": {
+        "vocab_size": 50257,
+        "context_length": 1024,
+        "emb_dim": 1600,
+        "n_heads": 25,
+        "n_layers": 48,
+        "drop_rate": 0.0,
+        "qkv_bias": True,
+    },
 }
 
 DEFAULT_PRESET = "124M"

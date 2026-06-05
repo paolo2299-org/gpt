@@ -41,6 +41,26 @@ Generate with saved weights:
 .venv/bin/python scripts/generate.py --weights model.best.pth --prompt "I wandered lonely as a"
 ```
 
+## Load GPT-2 open weights (book ch5)
+
+The same `GPTModel` that the scripts above train from scratch is also the network
+OpenAI's GPT-2 weights load into — only the config preset differs (`gpt2-small`:
+1024-token context, `qkv_bias=True`, no dropout). OpenAI's weights are published
+as a PyTorch state dict matching this model, so downloading them needs nothing but
+torch + requests (no TensorFlow). Fetch them once:
+
+```bash
+.venv/bin/python scripts/fetch_gpt2.py --size 124M
+```
+
+That writes `weights/gpt2-small.pth` (+ a `.json` sidecar recording the preset),
+which the generator and web UI then load like any other checkpoint:
+
+```bash
+.venv/bin/python scripts/generate.py --weights weights/gpt2-small.pth \
+  --prompt "Every effort moves you" --temperature 1.0 --top-k 50 --max-new-tokens 25
+```
+
 Run the local web UI directly from the virtualenv:
 
 ```bash
@@ -59,10 +79,12 @@ The Docker Compose setup reads environment variables from `.env`, so this file m
 The web app hosts **multiple demos** from a single weights directory. Set
 `WEIGHTS_DIR` to the folder of `.pth` files (default `weights`). Each demo
 defined in `app/demos.py` names the weights file it needs (e.g.
-`model.dickens.pth` for JaneGPT) and appears on the landing page only when that
-file is present. Models load lazily on a demo's first request.
+`model.dickens.pth` for JaneGPT, `gpt2-small.pth` for the GPT-2 demo) and appears
+on the landing page only when that file is present. Models load lazily on a
+demo's first request.
 
-The default training preset is `124M`; `demo-small` is a tiny shape for fast checks.
+The default training preset is `124M`; `demo-small` is a tiny shape for fast
+checks, and the `gpt2-*` presets match OpenAI's open weights.
 
 ## Tests
 

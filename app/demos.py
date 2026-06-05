@@ -55,6 +55,29 @@ DEMOS: tuple[Demo, ...] = (
         author_name="Jane Austen",
         repo_subpath="llm",
     ),
+    Demo(
+        slug="gpt2",
+        title="GPT-2 (124M)",
+        tagline="OpenAI's original GPT-2 small, loaded from its open weights.",
+        description=(
+            "The same GPT architecture as JaneGPT, but with OpenAI's publicly "
+            "released GPT-2 (124M) weights loaded in — exactly as covered in "
+            "chapter 5 of the book. Because it was trained on a large slice of the "
+            "web, its completions are far more fluent than the from-scratch demo. "
+            "Start a phrase and watch it continue."
+        ),
+        task="completion",
+        preset="gpt2-small",
+        weights_filename="gpt2-small.pth",
+        examples=(
+            "Every effort moves you",
+            "Once upon a time",
+            "The meaning of life is",
+            "In a shocking finding, scientists discovered",
+        ),
+        author_name="OpenAI GPT-2",
+        repo_subpath="scripts/fetch_gpt2.py",
+    ),
 )
 
 

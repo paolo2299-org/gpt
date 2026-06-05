@@ -14,9 +14,15 @@ The model weights are not baked into the Docker image. Production mounts the
 whole `/srv/gpt/weights` directory into the container at `/weights`. Set
 `WEIGHTS_DIR` to that directory (default `/weights`). The app serves **multiple
 demos**: each demo (see `app/demos.py`) names a weights file inside `WEIGHTS_DIR`
-(e.g. `model.dickens.pth` for JaneGPT), and a demo appears on the landing page
-only if its file is present. Models are loaded lazily on a demo's first request,
-so the app starts even if some (or all) weight files are missing.
+(e.g. `model.dickens.pth` for JaneGPT, `gpt2-small.pth` for the GPT-2 demo), and
+a demo appears on the landing page only if its file is present. Models are loaded
+lazily on a demo's first request, so the app starts even if some (or all) weight
+files are missing.
+
+Generate the GPT-2 open-weights checkpoint once with `scripts/fetch_gpt2.py`
+(pure torch + requests — it downloads a pre-converted PyTorch state dict; run it
+locally, not in the deployed image) and copy the resulting `gpt2-small.pth` into
+the weights directory.
 
 > **Migration note (breaking env change):** the previous single-model variables
 > `MODEL_WEIGHTS_PATH`, `MODEL_PRESET`, `SITE_TITLE`, and `AUTHOR_NAME` are

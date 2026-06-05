@@ -4,8 +4,7 @@ Flask >= 3.0
 jupyterlab >= 4.0          # all
 tiktoken >= 0.5.1          # ch02; ch04; ch05
 matplotlib >= 3.7.1        # ch04; ch06; ch07
-tensorflow>=2.16.2; sys_platform == 'darwin' and platform_machine == 'x86_64'  # Intel macOS
-tensorflow >= 2.18.0; sys_platform != 'darwin' or platform_machine != 'x86_64'   # ch05; ch06; ch07
+requests >= 2.31           # ch05 (download GPT-2 open weights in scripts/fetch_gpt2.py)
 tqdm >= 4.66.1             # ch05; ch07
 numpy >= 1.26             # dependency of several other libraries like torch and pandas
 pandas >= 2.2.1            # ch06

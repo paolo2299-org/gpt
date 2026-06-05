@@ -14,8 +14,8 @@ Reference checkout (already present locally): `~/projects/LLMs-from-scratch`. Co
   - `model.py` — `GPTModel`, `TransformerBlock`, `MultiHeadAttention`, `LayerNorm`, `GELU`, `FeedForward`, `GPTDatasetV1`, `create_dataloader_v1`. Mirrors chapters 2–4.
   - `training.py` — pretraining loop.
   - `generation.py` — text generation / sampling.
-  - `config.py` — `MODEL_PRESETS` (`demo-small`, `124M`), `DEFAULT_TRAINING_SETTINGS`, `BOOK_TEXT_PATH` (points into the LLMs-from-scratch checkout for "The Verdict").
-- `scripts/` — CLI entry points: `random_demo.py`, `pretrain.py`, `generate.py`.
+  - `config.py` — `MODEL_PRESETS` (from-scratch: `demo-small`, `124M`; GPT-2 open weights: `gpt2-small`/`-medium`/`-large`/`-xl`), `DEFAULT_TRAINING_SETTINGS`, `BOOK_TEXT_PATH` (points into the LLMs-from-scratch checkout for "The Verdict").
+- `scripts/` — CLI entry points: `random_demo.py`, `pretrain.py`, `generate.py`, `fetch_gpt2.py` (one-off, dev-only: downloads OpenAI's GPT-2 weights as a PyTorch state dict — pure torch + requests, no TensorFlow — and saves `weights/gpt2-small.pth`).
 - `app/` — Flask web UI hosting multiple demos: a landing page plus one page per demo.
   - `demos.py` — `Demo` registry (slug, title, `task`, preset, weights filename, copy). A demo is shown only if its weights file exists in `WEIGHTS_DIR`.
   - `services/registry.py` — `DemoRegistry`: lazily builds + caches one runner per demo (loads each model on first request).
@@ -33,7 +33,7 @@ Reference checkout (already present locally): `~/projects/LLMs-from-scratch`. Co
 - Run tests with `make test` (or `.venv/bin/python -m pytest tests`).
 - Run the web UI locally with `make flask-run`; via Docker with `make run` / `make dev`.
 - `.env` must exist before any `make run`/`make dev`/`make docker-test` (copy from `.env.example`).
-- Default model preset is `124M`. `demo-small` is a tiny shape useful for fast tests / sanity checks.
+- Default model preset is `124M`. `demo-small` is a tiny shape useful for fast tests / sanity checks. The `gpt2-*` presets match OpenAI's open weights (1024 context, `qkv_bias=True`, no dropout) — same `GPTModel`, different config.
 - Web app: set `WEIGHTS_DIR` to the directory of `.pth` files. Demos self-register from `app/demos.py` and appear only when their weights file is present — no per-demo env vars needed.
 
 ## Working with the book code

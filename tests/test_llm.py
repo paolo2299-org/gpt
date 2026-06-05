@@ -133,3 +133,30 @@ def test_pretraining_calls_eval_callback():
     assert evals[0]["epoch"] == 1
     assert evals[0]["global_step"] == 0
     assert "val_loss" in evals[0]
+
+
+def test_gpt2_small_preset_matches_open_weights_shape():
+    config = get_model_config("gpt2-small")
+
+    # The differences from the from-scratch presets are exactly what the released
+    # GPT-2 weights need (book ch5).
+    assert config["context_length"] == 1024
+    assert config["qkv_bias"] is True
+    assert config["drop_rate"] == 0.0
+    assert config["emb_dim"] == 768
+    assert config["n_layers"] == 12
+    assert config["n_heads"] == 12
+
+
+def test_gpt2_small_state_dict_round_trips_through_gptmodel():
+    # The GPT-2 demo loads a pre-converted state dict into this exact GPTModel.
+    # Confirm a gpt2-small model's state dict round-trips by key and shape (the
+    # property scripts/fetch_gpt2.py relies on when it re-saves the download).
+    config = get_model_config("gpt2-small")
+    config["n_layers"] = 1  # keep the test cheap; shapes are what matter
+    model = GPTModel(config)
+
+    reloaded = GPTModel(config)
+    result = reloaded.load_state_dict(model.state_dict(), strict=True)
+    assert result.missing_keys == []
+    assert result.unexpected_keys == []
