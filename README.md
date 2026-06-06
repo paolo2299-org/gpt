@@ -61,6 +61,52 @@ which the generator and web UI then load like any other checkpoint:
   --prompt "Every effort moves you" --temperature 1.0 --top-k 50 --max-new-tokens 25
 ```
 
+## Fine-tuning examples (book ch6 and ch7)
+
+The chapter 6 and 7 examples start from a GPT-2 checkpoint, so fetch one first
+if `weights/gpt2-small.pth` is not already present:
+
+```bash
+.venv/bin/python scripts/fetch_gpt2.py --size 124M
+```
+
+Fine-tune the chapter 6 SMS spam classifier:
+
+```bash
+.venv/bin/python scripts/finetune_spam_classifier.py \
+  --base-weights weights/gpt2-small.pth \
+  --output weights/spam-classifier.pth
+```
+
+That script downloads and prepares the SMS Spam Collection under `data/` unless
+you pass `--sms-tsv path/to/SMSSpamCollection.tsv`. It saves final weights plus a
+lowest-validation-loss checkpoint (`weights/spam-classifier.best.pth` by
+default). Classify a message with the completed classifier:
+
+```bash
+.venv/bin/python scripts/classify_spam.py \
+  --weights weights/spam-classifier.best.pth \
+  --prompt "WINNER!! Claim your free prize now"
+```
+
+Fine-tune the chapter 7 instruction-following model:
+
+```bash
+.venv/bin/python scripts/finetune_instruction.py \
+  --base-weights weights/gpt2-small.pth \
+  --input-file ~/projects/LLMs-from-scratch/ch07/01_main-chapter-code/instruction-data.json \
+  --output weights/instruction-following.pth
+```
+
+Generate an instruction-following response from the completed model:
+
+```bash
+.venv/bin/python scripts/instruct.py \
+  --weights weights/instruction-following.best.pth \
+  --prompt "Convert the active sentence to passive voice." \
+  --input "The chef cooked the meal."
+```
+
 Run the local web UI directly from the virtualenv:
 
 ```bash
