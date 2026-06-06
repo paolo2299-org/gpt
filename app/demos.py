@@ -78,6 +78,29 @@ DEMOS: tuple[Demo, ...] = (
         author_name="OpenAI GPT-2",
         repo_subpath="scripts/fetch_gpt2.py",
     ),
+    Demo(
+        slug="gpt2-medium",
+        title="GPT-2 (355M)",
+        tagline="OpenAI's larger GPT-2 (355M), loaded from its open weights.",
+        description=(
+            "The same architecture as the other demos, scaled up to OpenAI's "
+            "355M-parameter GPT-2 (24 layers, 1024-dim embeddings) and loaded from "
+            "the released open weights — book chapter 5. Larger than the 124M model, "
+            "so its completions tend to hang together better. Start a phrase and "
+            "watch it continue."
+        ),
+        task="completion",
+        preset="gpt2-medium",
+        weights_filename="gpt2-medium.pth",
+        examples=(
+            "Every effort moves you",
+            "Once upon a time",
+            "The meaning of life is",
+            "In a shocking finding, scientists discovered",
+        ),
+        author_name="OpenAI GPT-2",
+        repo_subpath="scripts/fetch_gpt2.py",
+    ),
 )
 
 

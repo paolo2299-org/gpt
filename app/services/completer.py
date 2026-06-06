@@ -60,6 +60,7 @@ class LLMCompleter:
                 context_size=self.config["context_length"],
                 temperature=temperature,
                 top_k=top_k,
+                eos_id=self.tokenizer.eot_token,
             )
         return token_ids_to_text(token_ids, self.tokenizer)
 

@@ -2,12 +2,14 @@ IMAGE_NAME = gpt
 COMPOSE = docker compose -f compose.yml -f compose.dev.yml
 COMPOSE_PROD = docker compose -f compose.yml -f compose.prod.yml
 
-FLASK ?= $(shell if [ -x .venv/bin/flask ]; then echo .venv/bin/flask; else echo flask; fi)
 PYTHON ?= $(shell if [ -x .venv/bin/python ]; then echo .venv/bin/python; else echo python; fi)
 PORT ?= 5000
 
+# Use `python -m flask` rather than the `flask` console script: console-script
+# shebangs hardcode an absolute interpreter path, which breaks if the venv was
+# copied/renamed from another project. `python -m` resolves the interpreter itself.
 flask-run:
-	$(FLASK) --app app run --debug --no-reload --port $(PORT)
+	$(PYTHON) -m flask --app app run --debug --no-reload --port $(PORT)
 
 dev:
 	$(COMPOSE) up --build gpt

@@ -20,7 +20,9 @@ class Config:
 
     DEFAULT_MAX_NEW_TOKENS = 80
     MAX_NEW_TOKENS_LIMIT = 200
-    DEFAULT_TEMPERATURE = 0.0
+    # Sample rather than decode greedily: temperature 0.0 (argmax) degenerates into
+    # repetitive loops on GPT-2-class models. A fixed seed keeps results reproducible.
+    DEFAULT_TEMPERATURE = 0.7
     DEFAULT_TOP_K = 50
     DEFAULT_SEED = 123
 

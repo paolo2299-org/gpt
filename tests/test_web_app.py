@@ -13,13 +13,16 @@ def test_landing_lists_available_demos(client):
 
 
 def test_landing_shows_demo_when_weights_present(make_client):
-    client = make_client(runners={}, files=["model.dickens.pth", "gpt2-small.pth"])
+    client = make_client(
+        runners={}, files=["model.dickens.pth", "gpt2-small.pth", "gpt2-medium.pth"]
+    )
 
     response = client.get("/")
 
     assert response.status_code == 200
     assert b"JaneGPT" in response.data
     assert b"GPT-2 (124M)" in response.data
+    assert b"GPT-2 (355M)" in response.data
 
 
 def test_demo_page_loads(client):
