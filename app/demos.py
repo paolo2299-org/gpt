@@ -39,32 +39,31 @@ DEMOS: tuple[Demo, ...] = (
     Demo(
         slug="jane",
         title="JaneGPT",
-        tagline="A homemade LLM trained from scratch on the works of Jane Austen.",
+        tagline="GPT-2 small fine-tuned on the six major Jane Austen novels.",
         description=(
-            "A homemade LLM trained solely on the works of Jane Austen. "
-            "Start a phrase and generate text that Jane Austen might have written. "
-            "As you will see, it doesn't live up to the real Jane Austen, or even "
-            "make a whole lot of sense, but it does have the flavour of the original "
-            "texts. Realistic results could be achieved with this model, but it would "
-            "take terabytes of data and millions of dollars in GPU costs."
+            "Start with OpenAI's GPT-2 small checkpoint, then fine-tune it further "
+            "on the six major Jane Austen novels. The result keeps GPT-2's general "
+            "language ability while nudging completions toward Austen's diction, "
+            "social comedy, and long-form sentence rhythm. Start a phrase and watch "
+            "the model continue it in a more Austen-flavoured voice."
         ),
         task="completion",
-        preset="124M",
-        weights_filename="model.dickens.pth",
-        examples=("It was a truth", "The morning was", "She had never", "In the drawing-room"),
-        author_name="Jane Austen",
-        repo_subpath="llm",
+        preset="gpt2-small",
+        weights_filename="jane-austen-gpt2-small.best.pth",
+        examples=("It is a truth", "She had long suspected", "The visit was", "In the drawing-room"),
+        author_name="Jane Austen + GPT-2",
+        repo_subpath="scripts/finetune_llm.py",
     ),
     Demo(
         slug="gpt2",
         title="GPT-2 (124M)",
         tagline="OpenAI's original GPT-2 small, loaded from its open weights.",
         description=(
-            "The same GPT architecture as JaneGPT, but with OpenAI's publicly "
-            "released GPT-2 (124M) weights loaded in — exactly as covered in "
+            "OpenAI's publicly released GPT-2 (124M) weights loaded into the same "
+            "GPT architecture used throughout these demos — exactly as covered in "
             "chapter 5 of the book. Because it was trained on a large slice of the "
-            "web, its completions are far more fluent than the from-scratch demo. "
-            "Start a phrase and watch it continue."
+            "web, its completions are broad and fluent. Start a phrase and watch it "
+            "continue."
         ),
         task="completion",
         preset="gpt2-small",

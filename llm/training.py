@@ -70,11 +70,13 @@ def train_model_simple(
     tokenizer,
     sample_tokens=50,
     on_eval=None,
+    max_steps=None,
 ):
     train_losses, val_losses, track_tokens_seen = [], [], []
     tokens_seen = 0
     global_step = -1
 
+    stop_training = False
     for epoch in range(num_epochs):
         model.train()
 
@@ -105,8 +107,14 @@ def train_model_simple(
                         tokens_seen=tokens_seen,
                     )
 
+            if max_steps is not None and global_step + 1 >= max_steps:
+                stop_training = True
+                break
+
         sample = generate_sample(model, tokenizer, device, start_context, max_new_tokens=sample_tokens)
         print(sample.replace("\n", " "))
+        if stop_training:
+            break
 
     return train_losses, val_losses, track_tokens_seen
 
@@ -141,11 +149,10 @@ def create_train_val_loaders(text_data, gpt_config, settings):
     return train_loader, val_loader
 
 
-def pretrain_from_text(text_data, gpt_config, settings, device, seed=123, on_eval=None):
-    torch.manual_seed(seed)
+def train_text_model(model, text_data, gpt_config, settings, device, seed=123, on_eval=None):
     tokenizer = tiktoken.get_encoding("gpt2")
 
-    model = GPTModel(gpt_config)
+    torch.manual_seed(seed)
     model.to(device)
     optimizer = torch.optim.AdamW(
         model.parameters(),
@@ -166,5 +173,16 @@ def pretrain_from_text(text_data, gpt_config, settings, device, seed=123, on_eva
         start_context=settings["start_context"],
         tokenizer=tokenizer,
         on_eval=on_eval,
+        max_steps=settings.get("max_steps"),
     )
     return train_losses, val_losses, tokens_seen, model
+
+
+def pretrain_from_text(text_data, gpt_config, settings, device, seed=123, on_eval=None):
+    torch.manual_seed(seed)
+    model = GPTModel(gpt_config)
+    return train_text_model(model, text_data, gpt_config, settings, device, seed=seed, on_eval=on_eval)
+
+
+def finetune_from_text(model, text_data, gpt_config, settings, device, seed=123, on_eval=None):
+    return train_text_model(model, text_data, gpt_config, settings, device, seed=seed, on_eval=on_eval)

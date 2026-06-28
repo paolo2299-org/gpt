@@ -35,6 +35,7 @@ Reference checkout (already present locally): `~/projects/LLMs-from-scratch`. Co
 - `.env` must exist before any `make run`/`make dev`/`make docker-test` (copy from `.env.example`).
 - Default model preset is `124M`. `demo-small` is a tiny shape useful for fast tests / sanity checks. The `gpt2-*` presets match OpenAI's open weights (1024 context, `qkv_bias=True`, no dropout) — same `GPTModel`, different config.
 - Web app: set `WEIGHTS_DIR` to the directory of `.pth` files. Demos self-register from `app/demos.py` and appear only when their weights file is present — no per-demo env vars needed.
+- Apple GPU / MPS note: on this Mac, `.venv` PyTorch has MPS built in and MPS works outside the Codex sandbox, but sandboxed checks may report `torch.backends.mps.is_available() == False`. For real training or generation runs that should use the Apple GPU, run the same `.venv/bin/python ... --device mps` command with escalation rather than falling back to CPU. Use unbuffered Python (`.venv/bin/python -u ...`) for long training runs so progress logs appear live.
 
 ## Working with the book code
 

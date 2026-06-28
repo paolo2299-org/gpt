@@ -8,13 +8,18 @@ def test_landing_lists_available_demos(client):
     assert response.status_code == 200
     assert b"LLM From Scratch Demos" in response.data
     assert b"JaneGPT" in response.data
-    assert b"A homemade LLM trained from scratch" in response.data
+    assert b"GPT-2 small fine-tuned on the six major Jane Austen novels" in response.data
     assert b"GPT-2 (124M)" not in response.data  # weights absent -> hidden
 
 
 def test_landing_shows_demo_when_weights_present(make_client):
     client = make_client(
-        runners={}, files=["model.dickens.pth", "gpt2-small.pth", "gpt2-medium.pth"]
+        runners={},
+        files=[
+            "jane-austen-gpt2-small.best.pth",
+            "gpt2-small.pth",
+            "gpt2-medium.pth",
+        ],
     )
 
     response = client.get("/")
@@ -31,13 +36,13 @@ def test_demo_page_loads(client):
     assert response.status_code == 200
     assert b"Start of phrase" in response.data
     assert b"JaneGPT" in response.data
-    assert b"A homemade LLM trained solely on the works of Jane Austen" in response.data
-    assert b"terabytes of data and millions of dollars" in response.data
+    assert b"fine-tune it further on the six major Jane Austen novels" in response.data
+    assert b"more Austen-flavoured voice" in response.data
     assert b"Add the start of a phrase..." in response.data
     assert b"All demos" in response.data  # back link to landing
-    assert b"It was a truth" in response.data
-    assert b"The morning was" in response.data
-    assert b"She had never" in response.data
+    assert b"It is a truth" in response.data
+    assert b"She had long suspected" in response.data
+    assert b"The visit was" in response.data
     assert b"In the drawing-room" in response.data
     assert b'name="max_new_tokens"' not in response.data
     assert b"Temperature" not in response.data

@@ -107,6 +107,35 @@ Generate an instruction-following response from the completed model:
   --input "The chef cooked the meal."
 ```
 
+Fine-tune GPT-2 small as a plain text completion model on Jane Austen:
+
+```bash
+.venv/bin/python scripts/clean_austen_text.py
+.venv/bin/python scripts/finetune_llm.py \
+  --base-weights weights/gpt2-small.pth \
+  --input-file texts/jane-austen.cleaned.txt \
+  --output weights/jane-austen-gpt2-small.pth \
+  --num-epochs 1 \
+  --learning-rate 5e-5 \
+  --batch-size 1
+```
+
+That performs continued next-token training: it starts from GPT-2's open weights
+instead of random initialization, then trains further on the cleaned six-novel
+Austen corpus. It also saves the lowest-validation-loss checkpoint as
+`weights/jane-austen-gpt2-small.best.pth`.
+
+Generate with the fine-tuned completion model:
+
+```bash
+.venv/bin/python scripts/generate.py \
+  --weights weights/jane-austen-gpt2-small.best.pth \
+  --prompt "She had long suspected" \
+  --temperature 0.8 \
+  --top-k 50 \
+  --max-new-tokens 80
+```
+
 Run the local web UI directly from the virtualenv:
 
 ```bash
@@ -125,9 +154,9 @@ The Docker Compose setup reads environment variables from `.env`, so this file m
 The web app hosts **multiple demos** from a single weights directory. Set
 `WEIGHTS_DIR` to the folder of `.pth` files (default `weights`). Each demo
 defined in `app/demos.py` names the weights file it needs (e.g.
-`model.dickens.pth` for JaneGPT, `gpt2-small.pth` for the GPT-2 demo) and appears
-on the landing page only when that file is present. Models load lazily on a
-demo's first request.
+`jane-austen-gpt2-small.best.pth` for JaneGPT, `gpt2-small.pth` for the GPT-2
+demo) and appears on the landing page only when that file is present. Models
+load lazily on a demo's first request.
 
 The default training preset is `124M`; `demo-small` is a tiny shape for fast
 checks, and the `gpt2-*` presets match OpenAI's open weights.

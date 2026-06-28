@@ -6,7 +6,7 @@ import torch
 from llm.config import get_model_config
 from llm.generation import generate, text_to_token_ids, token_ids_to_text
 from llm.model import GPTModel, create_dataloader_v1
-from llm.training import pretrain_from_text
+from llm.training import finetune_from_text, pretrain_from_text
 
 
 TINY_CONFIG = {
@@ -102,6 +102,36 @@ def test_tiny_pretraining_saves_and_loads_weights(tmp_path):
     )
 
     assert token_ids.shape[1] == 4
+
+
+def test_tiny_finetuning_updates_existing_model():
+    settings = {
+        "learning_rate": 5e-4,
+        "num_epochs": 1,
+        "batch_size": 2,
+        "weight_decay": 0.1,
+        "eval_freq": 1000,
+        "eval_iter": 1,
+        "train_ratio": 0.8,
+        "start_context": "I wandered lonely as a",
+        "max_steps": 1,
+    }
+    torch.manual_seed(123)
+    model = GPTModel(TINY_CONFIG)
+    initial_weight = model.out_head.weight.detach().clone()
+
+    _, _, tokens_seen, finetuned_model = finetune_from_text(
+        model=model,
+        text_data="I wandered lonely as a cloud." * 80,
+        gpt_config=TINY_CONFIG,
+        settings=settings,
+        device=torch.device("cpu"),
+        seed=123,
+    )
+
+    assert finetuned_model is model
+    assert tokens_seen == [settings["batch_size"] * TINY_CONFIG["context_length"]]
+    assert not torch.equal(model.out_head.weight, initial_weight)
 
 
 def test_pretraining_calls_eval_callback():
