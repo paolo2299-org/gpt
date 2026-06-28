@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from threading import Lock
 
@@ -11,6 +12,26 @@ import torch
 from llm.config import get_model_config
 from llm.generation import generate, text_to_token_ids, token_ids_to_text
 from llm.model import GPTModel
+
+
+ABBREVIATIONS = {
+    "capt",
+    "col",
+    "dr",
+    "esq",
+    "gen",
+    "hon",
+    "jr",
+    "maj",
+    "mr",
+    "mrs",
+    "ms",
+    "prof",
+    "rev",
+    "sr",
+    "st",
+}
+CLOSING_PUNCTUATION = "\"')]}”’"
 
 
 class LLMCompleter:
@@ -62,7 +83,8 @@ class LLMCompleter:
                 top_k=top_k,
                 eos_id=self.tokenizer.eot_token,
             )
-        return token_ids_to_text(token_ids, self.tokenizer)
+        text = token_ids_to_text(token_ids, self.tokenizer)
+        return trim_to_complete_sentence(text, prompt=prompt)
 
     def _load_model(self) -> GPTModel:
         if not self.weights_path.exists():
@@ -94,3 +116,58 @@ def resolve_device(device_name: str) -> torch.device:
             return torch.device("mps")
         return torch.device("cpu")
     return torch.device(device_name)
+
+
+def trim_to_complete_sentence(text: str, prompt: str = "") -> str:
+    """Trim generated text to the last likely complete sentence.
+
+    The decoder returns the prompt plus generated text. Only sentence endings
+    after the prompt are considered, so abbreviations in the user's prompt do not
+    remove the generated text. The heuristic is intentionally simple: it handles
+    common English titles well enough for demo output without trying to parse
+    every literary edge case.
+    """
+
+    search_start = len(prompt) if text.startswith(prompt) else 0
+    sentence_end = None
+
+    for index, char in enumerate(text):
+        if index < search_start or char not in ".!?":
+            continue
+        if _is_ignored_period(text, index):
+            continue
+
+        end = index + 1
+        while end < len(text) and text[end] in CLOSING_PUNCTUATION:
+            end += 1
+        sentence_end = end
+
+    if sentence_end is None:
+        return text.strip()
+    return text[:sentence_end].strip()
+
+
+def _is_ignored_period(text: str, index: int) -> bool:
+    if text[index] != ".":
+        return False
+
+    if (
+        index > 0
+        and text[index - 1].isdigit()
+        and index + 1 < len(text)
+        and text[index + 1].isdigit()
+    ):
+        return True
+    if index > 0 and text[index - 1] == ".":
+        return True
+    if index + 1 < len(text) and text[index + 1] == ".":
+        return True
+
+    match = re.search(r"([A-Za-z]+)\.$", text[: index + 1])
+    if match is None:
+        return False
+
+    word = match.group(1)
+    if word.lower() in ABBREVIATIONS:
+        return True
+    return len(word) == 1 and word.isupper()
