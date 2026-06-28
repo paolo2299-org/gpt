@@ -1,0 +1,10 @@
+# Dependencies for running the test suite (`make test`).
+#
+# The deployed web image installs only requirements-web.txt (slim runtime: the
+# app serves completion demos and never imports llm/classification.py). The full
+# pytest suite also exercises the chapter 6/7 fine-tuning code, which needs
+# pandas (and numpy). This file = web runtime deps + those test-only extras,
+# without the heavyweight jupyterlab/matplotlib from requirements.txt.
+-r requirements-web.txt
+numpy >= 1.26
+pandas >= 2.2.1
