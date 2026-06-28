@@ -9,3 +9,4 @@ weights/*
 !weights/.gitkeep
 texts/*.txt
 .env
+scripts/scratch.py
