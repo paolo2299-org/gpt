@@ -1,3 +1,5 @@
+name: gpt-dev
+
 services:
   gpt:
     image: ${IMAGE_NAME:-gpt}:${IMAGE_TAG:-main}

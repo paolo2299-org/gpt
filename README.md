@@ -151,6 +151,24 @@ make run
 
 The Docker Compose setup reads environment variables from `.env`, so this file must exist before running `make run`, `make dev`, or `make docker-test`.
 
+The container is available at `http://localhost:18084`. The source checkout
+uses the `gpt-dev` Compose project and publishes only on the host loopback
+interface, keeping it separate from production. `DEV_PORT` can override the
+host port.
+
+On the VPS, the existing production model assets can be reused safely through
+the read-only development mount by setting this in `.env`:
+
+```bash
+DEV_WEIGHTS_DIR=/srv/gpt/weights
+```
+
+From a Mac, forward the development port and open `http://localhost:18084`:
+
+```bash
+ssh -N -L 18084:127.0.0.1:18084 deploy@hetzner
+```
+
 The web app hosts **multiple demos** from a single weights directory. Set
 `WEIGHTS_DIR` to the folder of `.pth` files (default `weights`). Each demo
 defined in `app/demos.py` names the weights file it needs (e.g.

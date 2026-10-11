@@ -7,11 +7,11 @@ services:
       FLASK_ENV: development
       MODEL_DEVICE: auto
     ports:
-      - "8080:8080"
+      - "127.0.0.1:${DEV_PORT:-18084}:8080"
     volumes:
       - .:/app
       - type: bind
-        source: ./weights
+        source: ${DEV_WEIGHTS_DIR:-./weights}
         target: /weights
         read_only: true
         bind:
