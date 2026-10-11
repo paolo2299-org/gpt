@@ -1,4 +1,4 @@
-name: Deploy
+name: Build and publish image
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-production
+  group: publish-main-image
   cancel-in-progress: true
 
 permissions:
@@ -15,7 +15,7 @@ permissions:
   packages: write
 
 jobs:
-  test-build-deploy:
+  test-build-publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -55,26 +55,3 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.IMAGE_NAME }}:main
-
-      - name: Deploy on production VM
-        uses: appleboy/ssh-action@v1.2.0
-        env:
-          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-        with:
-          host: ${{ vars.DEPLOY_HOST }}
-          username: ${{ vars.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
-          envs: GHCR_USERNAME,GHCR_TOKEN
-          script_stop: true
-          script: |
-            set -eu
-            cd /srv/gpt/app/gpt
-
-            if [ -n "${GHCR_USERNAME}" ] && [ -n "${GHCR_TOKEN}" ]; then
-              echo "${GHCR_TOKEN}" | docker login ghcr.io -u "${GHCR_USERNAME}" --password-stdin
-            fi
-
-            docker compose -f compose.yml -f compose.prod.yml pull
-            docker compose -f compose.yml -f compose.prod.yml up -d

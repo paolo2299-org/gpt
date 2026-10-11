@@ -47,4 +47,8 @@ When extending model/training/generation logic:
 
 ## Deployment
 
-Production runs on a VPS at `gpt.pdlawson.com` behind a shared `web` reverse-proxy network. Image is built by GitHub Actions on push to `main` and deployed via SSH. Full details in `DEPLOYMENT.md`.
+Production runs on a VPS at `gpt.pdlawson.com` behind a shared `web`
+reverse-proxy network. GitHub Actions builds and publishes an image on pushes to
+`main`, then the VPS independently pulls and deploys changed `main` digests from
+a root-owned Compose definition. The workflow has no SSH access to production.
+Full details are in `DEPLOYMENT.md`.
