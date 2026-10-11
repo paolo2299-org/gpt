@@ -24,7 +24,7 @@ test:
 	$(PYTHON) -m pytest tests
 
 docker-test:
-	$(COMPOSE) run --rm test
+	$(COMPOSE) run --build --rm test
 
 down:
 	$(COMPOSE) down --remove-orphans
