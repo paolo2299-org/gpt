@@ -20,6 +20,7 @@ services:
   test:
     build:
       context: .
+      target: test
     command: python -m pytest tests/ -v
     environment:
       FLASK_ENV: development
