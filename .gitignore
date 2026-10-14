@@ -10,3 +10,4 @@ weights/*
 texts/*.txt
 .env
 scripts/scratch.py
+.dev/

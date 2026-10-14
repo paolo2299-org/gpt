@@ -1,0 +1,3 @@
+# Web development and chapter-code tests; notebook extras remain in requirements.txt.
+-r requirements-test.txt
+python-dotenv>=1.0.0

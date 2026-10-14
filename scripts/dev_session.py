@@ -1,0 +1,281 @@
+"""Run one development server per Git worktree."""
+
+from __future__ import annotations
+
+import argparse
+import fcntl
+import hashlib
+import ipaddress
+import json
+import os
+from pathlib import Path
+import signal
+import socket
+import subprocess
+import sys
+import threading
+import time
+from datetime import datetime, timezone
+
+APP_NAME = "gpt"
+ROOT = Path(__file__).resolve().parents[1]
+STATE_DIR = ROOT / ".dev"
+STATE_FILE = STATE_DIR / "session.json"
+LOCK_FILE = STATE_DIR / "run.lock"
+LOG_FILE = STATE_DIR / "server.log"
+SESSION_ID = hashlib.sha256(str(ROOT).encode()).hexdigest()[:12]
+SOCKET_FILE = STATE_DIR / "control.sock"
+if len(os.fsencode(SOCKET_FILE)) >= 96:
+    # Unix socket paths have a short platform-specific limit.
+    SOCKET_FILE = Path(f"/tmp/codex-dev-{os.getuid()}-{SESSION_ID}.sock")
+TAILSCALE_RANGE = ipaddress.ip_network("100.64.0.0/10")
+
+
+def bind_host() -> str:
+    requested = os.environ.get("DEV_HOST", "").strip()
+    if requested:
+        host = requested
+    else:
+        try:
+            result = subprocess.run(
+                ["tailscale", "ip", "-4"],
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=3,
+            )
+            host = result.stdout.strip().splitlines()[0]
+        except (FileNotFoundError, IndexError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+            host = "127.0.0.1"
+
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError as exc:
+        raise SystemExit(f"DEV_HOST must be a loopback or Tailscale IPv4 address: {host}") from exc
+    if address.version != 4 or not (address.is_loopback or address in TAILSCALE_RANGE):
+        raise SystemExit(f"Refusing to bind outside loopback or Tailscale: {host}")
+    return host
+
+
+def prepare_state() -> None:
+    STATE_DIR.mkdir(mode=0o700, exist_ok=True)
+    STATE_DIR.chmod(0o700)
+
+
+def active_session(command: str) -> dict[str, object] | None:
+    if not SOCKET_FILE.exists():
+        return None
+    try:
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as client:
+            client.settimeout(2)
+            client.connect(str(SOCKET_FILE))
+            client.sendall(command.encode() + b"\n")
+            reply = client.recv(65536)
+    except (ConnectionError, OSError, TimeoutError):
+        return None
+    try:
+        return json.loads(reply)
+    except json.JSONDecodeError:
+        return None
+
+
+def remove_stale_state() -> None:
+    for path in (SOCKET_FILE, STATE_FILE):
+        if path.exists():
+            if path.stat().st_uid != os.getuid():
+                raise SystemExit(f"Refusing to remove a file owned by another user: {path}")
+            path.unlink()
+
+
+def recorded_session() -> dict[str, object] | None:
+    try:
+        return json.loads(STATE_FILE.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return None
+
+
+def lock_is_held() -> bool:
+    if not LOCK_FILE.exists():
+        return False
+    with LOCK_FILE.open("a+") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return True
+    return False
+
+
+def start_detached() -> int:
+    prepare_state()
+    session = active_session("status")
+    if session is None and lock_is_held():
+        session = recorded_session()
+    if session is not None:
+        print(f"Development server already running at {session['url']}")
+        return 0
+
+    log_fd = os.open(LOG_FILE, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+    os.fchmod(log_fd, 0o600)
+    with os.fdopen(log_fd, "a") as log:
+        process = subprocess.Popen(
+            [sys.executable, str(Path(__file__).resolve()), "start"],
+            cwd=ROOT,
+            stdin=subprocess.DEVNULL,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+            close_fds=True,
+        )
+
+    deadline = time.monotonic() + 30
+    while time.monotonic() < deadline:
+        if process.poll() is not None:
+            raise SystemExit(
+                f"Development server exited with status {process.returncode}; see {LOG_FILE}"
+            )
+        session = active_session("status")
+        if session is None and lock_is_held():
+            session = recorded_session()
+        if session is not None and session.get("pid") == process.pid:
+            print(f"Dev URL: {session['url']}")
+            print(f"Assets: {session['assets']}")
+            print(f"Playwright session: {session['playwright_session']}")
+            print(f"Log: {LOG_FILE}")
+            print("Stop with: make dev-stop")
+            return 0
+        time.sleep(0.1)
+    raise SystemExit(f"Development server has not reported ready; check make dev-status and {LOG_FILE}")
+
+
+def run_server() -> int:
+    prepare_state()
+    with LOCK_FILE.open("a+") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            existing_session = active_session("status")
+            location = existing_session.get("url", "this worktree") if existing_session else "this worktree"
+            raise SystemExit(f"Development server already running at {location}")
+
+        remove_stale_state()
+        os.chdir(ROOT)
+        sys.path.insert(0, str(ROOT))
+        os.environ["FLASK_ENV"] = "development"
+        from scripts.dev_app import create_server
+
+        host = bind_host()
+        server, assets = create_server(ROOT, host)
+        port = server.socket.getsockname()[1]
+        session: dict[str, object] = {
+            "worktree": str(ROOT),
+            "pid": os.getpid(),
+            "host": host,
+            "port": port,
+            "url": f"http://{host}:{port}",
+            "assets": assets,
+            "playwright_session": f"{APP_NAME}-{SESSION_ID}",
+            "started_at": datetime.now(timezone.utc).isoformat(),
+        }
+
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as control:
+            control.bind(str(SOCKET_FILE))
+            SOCKET_FILE.chmod(0o600)
+            control.listen(2)
+            control.settimeout(1)
+            STATE_FILE.write_text(json.dumps(session, indent=2) + "\n")
+            STATE_FILE.chmod(0o600)
+            worker = threading.Thread(target=server.serve_forever, name="dev-http")
+            worker.start()
+
+            def interrupted(_signum: int, _frame: object) -> None:
+                raise KeyboardInterrupt
+
+            signal.signal(signal.SIGTERM, interrupted)
+            print(f"Dev URL: {session['url']}", flush=True)
+            print(f"Assets: {session['assets']}", flush=True)
+            print(f"Playwright session: {session['playwright_session']}", flush=True)
+            print("Stop with: make dev-stop", flush=True)
+
+            try:
+                while worker.is_alive():
+                    try:
+                        connection, _ = control.accept()
+                    except socket.timeout:
+                        continue
+                    with connection:
+                        connection.settimeout(2)
+                        command = connection.recv(128).strip()
+                        if command == b"status":
+                            connection.sendall(json.dumps(session).encode())
+                        elif command == b"stop":
+                            connection.sendall(json.dumps({"stopping": session["url"]}).encode())
+                            break
+            except KeyboardInterrupt:
+                pass
+            finally:
+                server.shutdown()
+                worker.join(timeout=5)
+                server.server_close()
+                remove_stale_state()
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("command", choices=("start", "start-detached", "status", "stop", "prune", "clean"))
+    command = parser.parse_args().command
+    if command == "start":
+        return run_server()
+    if command == "start-detached":
+        return start_detached()
+
+    if command in {"prune", "clean"}:
+        prepare_state()
+        with LOCK_FILE.open("a+") as lock:
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                raise SystemExit("A development server still owns this worktree")
+            remove_stale_state()
+            if command == "clean":
+                if LOG_FILE.exists():
+                    LOG_FILE.unlink()
+        if command == "clean":
+            print("Removed this worktree's development log and stale run metadata")
+        else:
+            print("Removed stale run metadata; development log was retained")
+        return 0
+
+    session = active_session("status" if command == "status" else "stop")
+    if session is not None:
+        if command == "stop":
+            print(f"Stopping {session['stopping']}")
+            deadline = time.monotonic() + 15
+            while lock_is_held():
+                if time.monotonic() >= deadline:
+                    print("Server has not stopped yet; check make dev-status")
+                    return 2
+                time.sleep(0.1)
+        else:
+            print(json.dumps(session, indent=2))
+        return 0
+
+    recorded = recorded_session()
+    if recorded is not None and lock_is_held():
+        if command == "status":
+            recorded["control"] = "server lock held; control socket unavailable from this shell"
+            print(json.dumps(recorded, indent=2))
+            return 0
+        print("Server is running, but this shell cannot reach its control socket.")
+        print("Rerun make dev-stop outside the Codex command sandbox.")
+        return 2
+    if recorded is not None:
+        print("Stale run metadata found; use make dev-prune or start the server again")
+        return 1
+
+    print("No running development server for this worktree")
+    return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -136,38 +136,31 @@ Generate with the fine-tuned completion model:
   --max-new-tokens 80
 ```
 
-Run the local web UI directly from the virtualenv:
+## Native development
+
+Development and CI use the same Python 3.12/uv setup. Docker is reserved for
+production images and deployment.
 
 ```bash
-make flask-run
+make worktree-create NAME=example-task
+# cd to the printed path
+make setup
+make dev-start
+make test
 ```
 
-Run the web UI with Docker Compose:
+The server reports its allocated loopback or Tailscale URL and remains running
+across turns and disconnects. `make dev-status` reports the URL; `make dev-stop`
+stops only this server. When finished, run
+`make worktree-finish NAME=example-task` from a retained checkout. It checks for
+unfinished/unpublished work and retains the branch.
 
-```bash
-cp .env.example .env  # first time only; edit values as needed
-make run
-```
-
-The Docker Compose setup reads environment variables from `.env`, so this file must exist before running `make run`, `make dev`, or `make docker-test`.
-
-The container is available at `http://localhost:18084`. The source checkout
-uses the `gpt-dev` Compose project and publishes only on the host loopback
-interface, keeping it separate from production. `DEV_PORT` can override the
-host port.
-
-On the VPS, the existing production model assets can be reused safely through
-the read-only development mount by setting this in `.env`:
-
-```bash
-DEV_WEIGHTS_DIR=/srv/gpt/weights
-```
-
-From a Mac, forward the development port and open `http://localhost:18084`:
-
-```bash
-ssh -N -L 18084:127.0.0.1:18084 deploy@hetzner
-```
+The launcher finds checkpoints in local/main-checkout `weights/` or the existing
+VPS `/srv/gpt/weights`. Use `DEV_WEIGHTS_DIR` for another host path. Shared
+checkpoints are only read, never modified or copied by the launcher or cleanup.
+With no checkpoints the landing page works without model demos.
+Linux setup installs CPU-only PyTorch; Mac setup keeps native/MPS support.
+See [local development](docs/local-development.md) for the full lifecycle.
 
 The web app hosts **multiple demos** from a single weights directory. Set
 `WEIGHTS_DIR` to the folder of `.pth` files (default `weights`). Each demo
@@ -182,7 +175,7 @@ checks, and the `gpt2-*` presets match OpenAI's open weights.
 ## Tests
 
 ```bash
-.venv/bin/python -m pytest tests
+make test
 ```
 
 ## Docker and Deployment

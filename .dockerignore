@@ -7,3 +7,6 @@ __pycache__/
 models/*.pth
 models/*.pth.json
 texts/*.txt
+.env
+.dev
+.mypy_cache

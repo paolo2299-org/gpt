@@ -6,5 +6,6 @@
 # pandas (and numpy). This file = web runtime deps + those test-only extras,
 # without the heavyweight jupyterlab/matplotlib from requirements.txt.
 -r requirements-web.txt
+pytest >= 9.0
 numpy >= 1.26
 pandas >= 2.2.1

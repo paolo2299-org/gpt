@@ -1,33 +1,52 @@
 IMAGE_NAME = gpt
-COMPOSE = docker compose -f compose.yml -f compose.dev.yml
-COMPOSE_PROD = docker compose -f compose.yml -f compose.prod.yml
+UV ?= uv
+PYTHON = .venv/bin/python
+ENV_FILE ?= $(shell if [ -f .env ]; then echo .env; else echo .env.example; fi)
+COMPOSE_PROD = ENV_FILE=$(ENV_FILE) docker compose -f compose.yml -f compose.prod.yml
+TORCH_BACKEND = $(shell if [ "$$(uname -s)" = Linux ]; then echo --torch-backend=cpu; fi)
 
-PYTHON ?= $(shell if [ -x .venv/bin/python ]; then echo .venv/bin/python; else echo python; fi)
-PORT ?= 5000
+# Native development: one environment per worktree.
+worktree-create:
+	python3 scripts/dev_worktree.py create "$(NAME)"
 
-# Use `python -m flask` rather than the `flask` console script: console-script
-# shebangs hardcode an absolute interpreter path, which breaks if the venv was
-# copied/renamed from another project. `python -m` resolves the interpreter itself.
-flask-run:
-	$(PYTHON) -m flask --app app run --debug --no-reload --port $(PORT)
+worktree-list:
+	python3 scripts/dev_worktree.py list
+
+worktree-check:
+	python3 scripts/dev_worktree.py check "$(NAME)"
+
+worktree-finish:
+	python3 scripts/dev_worktree.py finish "$(NAME)"
+
+setup:
+	@if [ ! -x $(PYTHON) ]; then $(UV) venv --python 3.12 .venv; fi
+	@$(PYTHON) -c 'import sys; sys.exit(0 if sys.version_info[:2] == (3, 12) else "Existing .venv is not Python 3.12; recreate it before running make setup")'
+	$(UV) pip install --python $(PYTHON) $(TORCH_BACKEND) -r requirements-dev.txt
 
 dev:
-	$(COMPOSE) up --build gpt
+	$(PYTHON) scripts/dev_session.py start
 
-build:
-	docker build -t $(IMAGE_NAME) .
+dev-start:
+	$(PYTHON) scripts/dev_session.py start-detached
 
-run:
-	$(COMPOSE) up --build gpt
+dev-status:
+	$(PYTHON) scripts/dev_session.py status
+
+dev-stop:
+	$(PYTHON) scripts/dev_session.py stop
+
+dev-prune:
+	$(PYTHON) scripts/dev_session.py prune
+
+dev-clean:
+	$(PYTHON) scripts/dev_session.py clean
 
 test:
-	$(PYTHON) -m pytest tests
+	$(PYTHON) -m pytest tests/ -v
 
-docker-test:
-	$(COMPOSE) run --build --rm test
-
-down:
-	$(COMPOSE) down --remove-orphans
+# Production images and manual operation.
+prod-build:
+	docker build -t $(IMAGE_NAME) .
 
 prod-start:
 	$(COMPOSE_PROD) up -d --pull never gpt
@@ -38,4 +57,4 @@ prod-stop:
 prod-restart:
 	$(COMPOSE_PROD) up -d --pull never gpt
 
-.PHONY: flask-run dev build run test docker-test down prod-start prod-stop prod-restart
+.PHONY: worktree-create worktree-list worktree-check worktree-finish setup dev dev-start dev-status dev-stop dev-prune dev-clean test prod-build prod-start prod-stop prod-restart
