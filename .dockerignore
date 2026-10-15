@@ -10,3 +10,4 @@ texts/*.txt
 .env
 .dev
 .mypy_cache
+.agents
