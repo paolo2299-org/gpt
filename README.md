@@ -181,3 +181,7 @@ make test
 ## Docker and Deployment
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for Docker Compose setup, VPS configuration, and CI/CD details.
+
+Private native-development settings can be shared across worktrees without
+committing secrets: see [private development configuration](docs/local-development.md#private-configuration-shared-by-worktrees).
+Use `make dev-config` to validate the project's host config without printing values.

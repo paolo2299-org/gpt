@@ -90,3 +90,12 @@ For a manually or app-created worktree the helper does not manage, stop only
 the identified server and report that its worktree is retained. Do not adopt or
 remove it automatically. Report the removed environment and retained branch
 after successful cleanup. A turn ending alone is never a cleanup signal.
+
+## Private development settings
+
+Native startup automatically loads this project's private host config described
+in `docs/local-development.md`. Use `make dev-config` to check configured names
+without revealing values; do not cat/print the config or copy it into worktrees.
+Missing optional credentials should be reported only for the features that need
+them. Do not read production secrets or make paid API calls merely to preview.
+A particular key may already have been provisioned with the user's permission.

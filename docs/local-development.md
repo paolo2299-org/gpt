@@ -113,3 +113,43 @@ environment; never finish from the worktree being removed.
 Production images and manual operations use `make prod-build`,
 `make prod-start`, `make prod-stop` and `make prod-restart`. The authoritative
 VPS Compose definitions and deployment timers live in hetzner-vm-setup.
+
+## Private configuration shared by worktrees
+
+Managed native servers automatically read `~/.config/project-dev/gpt.json`
+(or `$XDG_CONFIG_HOME/project-dev/gpt.json`). This is private host
+configuration, not a file to commit or copy into every worktree. No file is
+required for basic previews. `make dev-config` validates it and reports variable
+names only; it never prints values. Restart the server after changing config.
+
+Create the directory with mode `700` and the file with mode `600`, owned by the
+account running development. Symlinked files/directories, insecure permissions,
+invalid JSON and unsupported variables are refused. The format is a JSON object
+mapping these supported names to string values:
+
+- `DEV_WEIGHTS_DIR`
+- `MODEL_DEVICE`
+- `SITE_TITLE`
+- `OMP_NUM_THREADS`
+- `DEV_HOST`
+
+Use `DEV_CONFIG_FILE=/absolute/path/to/private.json` for an explicit alternative;
+an explicit missing file is an error. Use `DEV_CONFIG_DISABLED=1` for an isolated
+run without host config. Precedence for managed servers is inherited environment,
+then a worktree-local .env, then private host config, then defaults.
+The launcher still enforces its development mode, private bind addresses and
+existing development safety rules.
+
+Only native development entrypoints load this file; production and ordinary
+tests do not. Nothing is exported to other projects or shell startup files.
+For an explicitly requested ancillary command (e.g. a scraper), use
+`python3 scripts/dev_config.py run -- <command> [arguments...]`. It passes only
+this project's allowed configuration to that child process. This wrapper does
+not load a worktree-local .env. Do not run scrapers or paid API calls just to
+start/verify a preview, print secret values, or copy production environment files.
+A user may authorise provisioning a particular existing API key separately.
+
+Cleanup never touches the host config. Existing worktree-local .env files still
+block guarded removal; preserve/resolve them explicitly instead of weakening the
+guard. Shared configs/credentials are readable by same-user project code; native
+worktrees are not a security sandbox for untrusted code.

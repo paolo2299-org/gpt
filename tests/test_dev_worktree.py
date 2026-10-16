@@ -148,6 +148,7 @@ def test_two_live_environments_cleanup_is_isolated(worktrees):
     source = Path(__file__).resolve().parents[1]
     (worktrees.repo / "scripts").mkdir()
     shutil.copy2(source / "scripts/dev_session.py", worktrees.repo / "scripts/dev_session.py")
+    shutil.copy2(source / "scripts/dev_config.py", worktrees.repo / "scripts/dev_config.py")
     (worktrees.repo / "scripts/dev_app.py").write_text(
         "from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler\n"
         "class Handler(BaseHTTPRequestHandler):\n"

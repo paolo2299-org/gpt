@@ -160,6 +160,10 @@ def run_server() -> int:
         remove_stale_state()
         os.chdir(ROOT)
         sys.path.insert(0, str(ROOT))
+        from dotenv import load_dotenv
+        load_dotenv(ROOT / ".env", override=False)
+        from scripts.dev_config import load_config
+        load_config()
         os.environ["FLASK_ENV"] = "development"
         from scripts.dev_app import create_server
 

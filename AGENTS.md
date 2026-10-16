@@ -127,3 +127,10 @@ models and avoid loading several large models on the VPS simultaneously.
 Linux setup uses CPU-only PyTorch; Mac setup retains native/MPS support. The
 default setup covers the web app and chapter-code tests. Notebook extras in
 `requirements.txt` can be installed into the same virtualenv when needed.
+
+## Private native-development configuration
+
+Use the project-specific host config in `docs/local-development.md` for reusable
+credentials/settings. `make dev-config` reports names only. Never print secrets,
+copy an entire production env, or delete host config when finishing a worktree.
+Production-key provisioning requires the user's specific authorisation.
